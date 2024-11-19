@@ -1,0 +1,28 @@
+main{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh
+}
+
+.form-div {
+    max-width: 40rem; /* Form genişliği */
+    margin: 2rem; /* Çevresel boşluk */
+    padding: 1rem; /* İçerik boşluğu */
+    background-color: var(--color-form-bg); /* Arka plan rengi değişken */
+    width: 100%;
+    height: 100vh;
+}
+form a {
+    text-decoration: underline;
+}
+h1{
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin-bottom: 2rem;
+    margin-top: 4.5rem;
+    text-align: left;
+}
+#term-of-use {
+    margin-bottom: 2.25rem;
+}

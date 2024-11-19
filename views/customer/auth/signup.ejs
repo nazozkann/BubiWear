@@ -1,0 +1,46 @@
+<%- include('../includes/head', { pageTitle: 'Signup' }) %>
+    <link rel="stylesheet" href="/styles/forms.css">
+    <link rel="stylesheet" href="/styles/auth.css">
+</head>
+<body>
+    <%- include('../includes/header') %>
+    <main>
+        <div class="form-div">
+            <h1>CREATE FREE ACCOUNT</h1>
+            <form action="" method="">
+                <div>
+                    <label for="email">E-mail Address</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div>
+                    <label for="password">Password</label>
+                    <input type="password" id="password" minlength="6" name="password" required>
+                </div>
+                <div>
+                    <label for="confirm-password">Confirm Password</label>
+                    <input type="confirm-password" id="confirm-password" minlength="6" name="confirm-password" required>
+                </div>
+                <div>
+                    <label for="fullname">Full Name</label>
+                    <input type="text" id="fullname" name="fullname" required>
+                </div>
+                <div>
+                    <p id="term-of-use">
+                        You agree to our <a href="">Terms of Use</a> when creating an account.
+                    </p>
+                </div>
+                <div>
+                    <button class="btn btn-dark">
+                        Sign Up
+                    </button>
+                </div>
+                <div>
+                    <p>
+                        Why do you need an account?  <a href="">Read More</a>
+                    </p>
+                </div>
+                <a href="/signin">Sign In</a>
+            </form>
+        </div>
+    </main>
+<%- include('../includes/footer') %>
