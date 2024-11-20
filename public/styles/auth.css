@@ -23,6 +23,7 @@ h1{
     margin-top: 4.5rem;
     text-align: left;
 }
-#term-of-use {
+#term-of-use,
+#forgot-password {
     margin-bottom: 2.25rem;
 }
