@@ -27,3 +27,9 @@ h1{
 #forgot-password {
     margin-bottom: 2.25rem;
 }
+.alert h2{
+    font-weight: 400;
+}
+.alert p{
+    font-weight: 300;
+}

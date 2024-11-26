@@ -1,15 +1,40 @@
 const User = require('../models/user-model');
 const authUtil = require('../util/authentication');
 const userCredentialsAreValid = require('../util/validation');
+const sessionFlash = require('../util/session-flash');
 
 function getSignup(req,res){
-    res.render('customer/auth/signup');
+    let sessionData = sessionFlash.getSessionData(req);
+
+    if(!sessionData) {
+        sessionData = {
+            email: '',
+            password: '',
+            fullname:''
+        };
+    }
+
+    res.render('customer/auth/signup', { inputData:sessionData });
 }
 
 async function signup(req,res,next) {
+    const enteredData = {
+        email: req.body.email,
+        password: req.body.password,
+        fullname: req.body.fullname
+    }
 
     if(!userCredentialsAreValid(req.body.email, req.body.password, req.body.fullname)) {
-        res.redirect('/signup');
+        sessionFlash.flashDataToSession( 
+            req, 
+            {
+                errorMessage: 
+                    'Please check yout input.',
+                ...enteredData
+            }, 
+            function() {
+            res.redirect('/signup');
+        })
         return;
     }
 
@@ -23,7 +48,12 @@ async function signup(req,res,next) {
       const existsAlready = await user.existsAlready();
 
       if(existsAlready) {
-          res.redirect('/signup');
+        sessionFlash.flashDataToSession(req, {
+            errorMessage:'User already exists',
+            ...enteredData
+        }, function(){
+            res.redirect('/signup');
+        })
           return;
       }
       await user.signup();
@@ -35,7 +65,15 @@ async function signup(req,res,next) {
     res.redirect('/signin');
 }
 function getSignin(req,res){
-    res.render('customer/auth/signin')
+    let sessionData = sessionFlash.getSessionData(req);
+
+    if(!sessionData){
+        sessionData = {
+            email:'',
+            password:''
+        };
+    }
+    res.render('customer/auth/signin', { inputData: sessionData });
 }
 
 async function signin(req,res, next) {
@@ -48,15 +86,25 @@ async function signin(req,res, next) {
       return;
     }
 
+    const sessionErrorData = {
+        errorMessage: 'Invalid credentials',
+        email:user.email,
+        password: user.password 
+    };
+
     if(!existingUser){
-        res.redirect('/signin');
+        sessionFlash.flashDataToSession(req, sessionErrorData, function(){
+            res.redirect('/signin');
+        })
         return;
     }
 
     const passwordIsCorrect = await user.hasMatchingPassword(existingUser.password);
 
     if(!passwordIsCorrect){
-        res.redirect('/signin');
+        sessionFlash.flashDataToSession(req, sessionErrorData, function(){
+            res.redirect('/signin');
+        })
         return;
     }
 

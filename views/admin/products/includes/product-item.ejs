@@ -1,0 +1,24 @@
+<article class="product-item">
+    <div class="pc-up-info">
+        <div class="pc-color-options">
+            <div class="pc-black-circle"></div>
+            <div class="pc-white-circle"></div>
+            <div class="pc-grey-circle"></div>
+        </div>
+        <div class="pc-edit-product">
+            <a href="/admin/products/<%= product.id %>">Edit Product</a>
+        </div>
+    </div>
+    <div class="pc-img">
+        <img src="<%= product.imageUrls[0] %>" alt=" <%= product.title %> ">
+    </div>
+    <div class="pc-down-info">
+        <div class="pc-down-texts">
+            <h2><%= product.title %></h2>
+            <p><%= product.price %> ₺</p>
+        </div>
+        <div class="pc-down-fav">
+            <img src="/images/fav-icon-ligth.png" alt="">
+        </div>
+    </div>
+</article>
