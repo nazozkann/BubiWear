@@ -53,3 +53,18 @@ input{
 #add-new-product-main h1{
     text-align: left;
 }
+.image-upload-control{
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 2rem;
+}
+.image-upload-control input{
+    max-width: 15rem;
+}
+.image-upload-control img{
+    display: none;
+    width: 4rem;
+    height: auto;
+    object-fit: cover;
+}

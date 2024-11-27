@@ -5,71 +5,84 @@
             </p>
             <p class="inpt-lbl-flex">
                 <label for="">Price</label>
-                <input type="number" id="price" name="price" <%= product.price %> required>
+                <input type="number" id="price" name="price" value="<%= product.price %>"required>
             </p>
             <p class="inpt-lbl-flex-row">
                 <label for="category">Category</label>
-                <select id="category" name="category" <%= product.category %> required>
-                    <option value="t-shirt">T-shirt</option>
-                    <option value="sweatshirt">Sweatshirt</option>
-                    <option value="pants">Pants</option>
-                    <option value="bags">Bags</option>
+                <select id="category" name="category" required>
+                    <option value="t-shirt" <%= product.category === 't-shirt' ? 'selected' : '' %>>T-shirt</option>
+                    <option value="sweatshirt" <%= product.category === 'sweatshirt' ? 'selected' : '' %>>Sweatshirt</option>
+                    <option value="pants" <%= product.category === 'pants' ? 'selected' : '' %>>Pants</option>
+                    <option value="bags" <%= product.category === 'bags' ? 'selected' : '' %>>Bags</option>
                 </select>
             </p>
             <div class="check-boxes">
                 <p>
-                    <label for="color" <%= product.color %>>Color Options</label>
-                    <input type="checkbox" id="black" name="color" value="black">
+                    <label for="color">Color Options</label>
+                    <input type="checkbox" id="black" name="color" value="black" <%= product.colors && product.colors.includes('black') ? 'checked' : '' %>>
                     <label class="opt" for="black">Black</label>
                 
-                    <input type="checkbox" id="white" name="color" value="white">
+                    <input type="checkbox" id="white" name="color" value="white" <%= product.colors && product.colors.includes('white') ? 'checked' : '' %>>
                     <label class="opt" for="white">White</label>
                 
-                    <input type="checkbox" id="gray" name="color" value="gray">
+                    <input type="checkbox" id="gray" name="color" value="gray" <%= product.colors && product.colors.includes('gray') ? 'checked' : '' %>>
                     <label class="opt" for="gray">Gray</label>
                 </p>
                 <p>
-                    <label for="size" <%= product.sizes %>>Available Sizes</label><br>
+                    <label for="size">Available Sizes</label><br>
                     <ul style="list-style: none; padding: 0;">
                         <li>
-                            <input type="checkbox" id="xs" name="size" value="xs">
+                            <input type="checkbox" id="xs" name="size" value="xs" <%= product.sizes && product.sizes.includes('xs') ? 'checked' : '' %>>
                             <label for="xs">XS</label>
                         </li>
                         <li>
-                            <input type="checkbox" id="s" name="size" value="s">
+                            <input type="checkbox" id="s" name="size" value="s" <%= product.sizes && product.sizes.includes('s') ? 'checked' : '' %>>
                             <label for="s">S</label>
                         </li>
                         <li>
-                            <input type="checkbox" id="m" name="size" value="m">
+                            <input type="checkbox" id="m" name="size" value="m" <%= product.sizes && product.sizes.includes('m') ? 'checked' : '' %>>
                             <label for="m">M</label>
                         </li>
                         <li>
-                            <input type="checkbox" id="l" name="size" value="l">
+                            <input type="checkbox" id="l" name="size" value="l" <%= product.sizes && product.sizes.includes('l') ? 'checked' : '' %>>
                             <label for="l">L</label>
                         </li>
                         <li>
-                            <input type="checkbox" id="xl" name="size" value="xl">
+                            <input type="checkbox" id="xl" name="size" value="xl" <%= product.sizes && product.sizes.includes('xl') ? 'checked' : '' %>>
                             <label for="xl">XL</label>
                         </li>
                     </ul>
                 </p>
             </div>
-            <p>
-                <label for="">Image 1</label>
-                <input type="file" id="image-1" name="image-1" accept="image/png, image/jpg, image/jpeg" required>
-            </p>
-            <p>
-                <label for="">Image 2</label>
-                <input type="file" id="image-2" name="image-2" accept="image/png, image/jpg, image/jpeg" required>
-            </p>
-            <p>
-                <label for="">Image 3</label>
-                <input type="file" id="image-3" name="image-3" accept="image/png, image/jpg, image/jpeg" required>
-            </p>
-            <p>
-                <label for="">Image 4</label>
-                <input type="file" id="image-4" name="image-4" accept="image/png, image/jpg, image/jpeg" required>
-            </p>
+            <div class="image-upload-control">
+                <p>
+                    <label for="images" class="custom-file-upload">Image 1</label>
+                    <input type="file" id="image-1" name="image-1" accept="image/png, image/jpg, image/jpeg" <% if(imageRequired) { %>required<% } %> required>
+                </p>
+
+                <img src="" alt="Selected Image 1">
+            </div>
+            <div class="image-upload-control">
+                <p>
+                    <label for="images" class="custom-file-upload">Image 2</label>
+                    <input type="file" id="image-2" name="image-2" accept="image/png, image/jpg, image/jpeg" <% if(imageRequired) { %>required<% } %> required>
+                </p>
+                <img src="" alt="Selected Image 2">
+            </div>
+            <div class="image-upload-control">
+                <p>
+                    <label for="images" class="custom-file-upload">Image 3</label>
+                    <input type="file" id="image-3" name="image-3" accept="image/png, image/jpg, image/jpeg" <% if(imageRequired) { %>required<% } %> required>
+                </p>
+                <img src="" alt="Selected Image 3">
+            </div>
+            <div class="image-upload-control">
+                <p>
+                    <label for="images" class="custom-file-upload">Image 4</label>
+                    <input type="file" id="image-4" name="image-4" accept="image/png, image/jpg, image/jpeg" <% if(imageRequired) { %>required<% } %> required>
+                </p>
+                <img src="" alt="Selected Image 4">
+            </div>
 
             <p id="new-p-buttons">
                 <button type="reset" class="btn btn-dark">Reset</button>

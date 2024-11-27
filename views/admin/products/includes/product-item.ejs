@@ -16,6 +16,7 @@
         <div class="pc-down-texts">
             <h2><%= product.title %></h2>
             <p><%= product.price %> ₺</p>
+            <button class="btn btn-dark delete-btn" data-productid="<%= product.id %>" data-csrf="<%= locals.csrfToken %>">Delete</button>
         </div>
         <div class="pc-down-fav">
             <img src="/images/fav-icon-ligth.png" alt="">
