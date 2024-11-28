@@ -1,4 +1,4 @@
-const mongodb = require('mongodb');
+const { ObjectId } = require('mongodb');
 
 const db = require('../data/database');
 
@@ -7,13 +7,15 @@ class Product {
         this.title = productData.title;
         this.price = +productData.price;
         this.category = productData.category;
-        this.colors = productData.colors || []; // Varsayılan değer
-        this.sizes = productData.sizes || []; // Varsayılan değer
-        this.images = Array.isArray(productData.images) ? productData.images : []; // Varsayılan değer
+        this.colors = productData.colors || [];
+        this.sizes = productData.sizes || [];
+        this.image1 = productData.image1 || null;
+        this.image2 = productData.image2 || null;
+        this.image3 = productData.image3 || null;
+        this.image4 = productData.image4 || null;
 
-        this.updateImageData(); // imagePaths ve imageUrls oluşturulur
+        this.updateImageData();
 
-        // _id varsa, bunu string olarak kaydediyoruz.
         if (productData._id) {
             this.id = productData._id.toString();
         }
@@ -22,7 +24,7 @@ class Product {
     static async findById(productId) {
         let prodId;
         try {
-            prodId = new mongodb.ObjectId(productId);
+            prodId = new ObjectId(productId);
         } catch (error) {
             error.code = 404;
             throw error;
@@ -35,24 +37,26 @@ class Product {
             throw error;
         }
 
+        product.colors = product.colors || [];
+        product.sizes = product.sizes || [];
+
         return new Product(product);
     }
 
-    // Tüm ürünleri döndürür
     static async findAll() {
         const products = await db.getDb().collection('products').find().toArray();
-
-        // Veritabanından alınan her belgeyi Product nesnesine dönüştürür
         return products.map((productDocument) => new Product(productDocument));
     }
 
     updateImageData() {
-        // this.images kullanılarak imagePaths ve imageUrls oluşturulur
-        this.imagePaths = this.images.map((image) => `product-data/images/${image}`);
-        this.imageUrls = this.images.map((image) => `/products/assets/images/${image}`);
+        this.imageUrls = [
+            this.image1 ? `/products/assets/images/${this.image1}` : null,
+            this.image2 ? `/products/assets/images/${this.image2}` : null,
+            this.image3 ? `/products/assets/images/${this.image3}` : null,
+            this.image4 ? `/products/assets/images/${this.image4}` : null
+        ];
     }
 
-    // Ürünü kaydeder
     async save() {
         const productData = {
             title: this.title,
@@ -60,11 +64,14 @@ class Product {
             category: this.category,
             colors: this.colors,
             sizes: this.sizes,
-            images: this.images // Resim isimlerini kaydediyoruz
+            image1: this.image1,
+            image2: this.image2,
+            image3: this.image3,
+            image4: this.image4
         };
-    
-        if (this.id && mongodb.ObjectId.isValid(this.id)) {
-            const productId = new mongodb.ObjectId(this.id);
+
+        if (this.id && ObjectId.isValid(this.id)) {
+            const productId = new ObjectId(this.id);
             await db.getDb().collection('products').updateOne(
                 { _id: productId },
                 { $set: productData }
@@ -74,13 +81,16 @@ class Product {
         }
     }
 
-    async replaceImage(newImages) {
-        this.images = Array.isArray(newImages) ? newImages : [];
+    async replaceImages(newImages) {
+        this.image1 = newImages[0] || this.image1;
+        this.image2 = newImages[1] || this.image2;
+        this.image3 = newImages[2] || this.image3;
+        this.image4 = newImages[3] || this.image4;
         this.updateImageData();
     }
 
     async remove() {
-        const productId = new mongodb.ObjectId(this.id);
+        const productId = new ObjectId(this.id);
         await db.getDb().collection('products').deleteOne({ _id: productId });
     }
 }

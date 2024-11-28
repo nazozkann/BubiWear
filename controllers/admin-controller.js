@@ -1,5 +1,4 @@
 const Product = require('../models/product-model');
-const { get } = require('../routes/admin-routes');
 
 async function getProducts(req, res, next) {
     try {
@@ -16,12 +15,16 @@ function getNewProduct(req, res) {
 }
 
 async function createNewProduct(req, res, next) {
-    // req.files'teki tüm dosyaları bir diziye dönüştürüyoruz
-    const images = Object.keys(req.files).map(key => req.files[key][0].filename);
+    const images = req.files ? req.files.map(file => file.filename) : [];
 
     const productData = {
         ...req.body,
-        images: images // images artık bir dizi
+        colors: Array.isArray(req.body.colors) ? req.body.colors : [req.body.colors].filter(Boolean),
+        sizes: Array.isArray(req.body.sizes) ? req.body.sizes : [req.body.sizes].filter(Boolean),
+        image1: images[0] || null,
+        image2: images[1] || null,
+        image3: images[2] || null,
+        image4: images[3] || null
     };
 
     const product = new Product(productData);
@@ -44,6 +47,7 @@ async function getUpdateProduct(req, res, next) {
             error.statusCode = 404;
             throw error;
         }
+        product.updateImageData(); // Ensure image URLs are generated
         res.render('admin/products/update-product', { product: product });
     } catch (error) {
         next(error);
@@ -51,13 +55,22 @@ async function getUpdateProduct(req, res, next) {
 }
 
 async function updateProduct(req, res, next) {
+    const existingProduct = await Product.findById(req.params.id);
+
     const product = new Product({
         ...req.body,
+        colors: Array.isArray(req.body.colors) ? req.body.colors : [req.body.colors].filter(Boolean),
+        sizes: Array.isArray(req.body.sizes) ? req.body.sizes : [req.body.sizes].filter(Boolean),
+        image1: existingProduct.image1,
+        image2: existingProduct.image2,
+        image3: existingProduct.image3,
+        image4: existingProduct.image4,
         _id: req.params.id
     });
 
-    if(req.file) {
-        product.replaceImage(req.file.filename);
+    if (req.files && req.files.length > 0) {
+        const images = req.files.map(file => file.filename);
+        product.replaceImages(images);
     }
 
     try {
@@ -72,13 +85,13 @@ async function updateProduct(req, res, next) {
 
 async function deleteProduct(req, res, next) {
     let product;
-    try{
+    try {
         product = await Product.findById(req.params.id);
         await product.remove();
     } catch (error) {
         return next(error);
     }
-    res.json({message: 'Delete success!'});
+    res.json({ message: 'Delete success!' });
 }
 
 module.exports = {
