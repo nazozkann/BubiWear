@@ -6,6 +6,12 @@ nav {
     background-color: var(--color-nav);
     padding-top: 1rem;
 }
+.sticky {
+    position: -webkit-sticky; /* For Safari */
+    position: sticky;
+    top: 0;
+    z-index: 1000; /* Ensure it stays on top */
+}
 #desktop-menu{
     display: none;
     height: 5rem;
@@ -60,6 +66,10 @@ nav {
 .icon-hover{
     position: relative;
     display: inline-block;
+}
+.cart-display{
+    display: flex;
+    flex-direction: row;
 }
 .default-img {
     display: block; /* Varsayılan olarak görünsün */

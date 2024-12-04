@@ -1,0 +1,39 @@
+<%- include('../../shared/includes/head', { pageTitle: 'Your Cart' }) %>
+<link rel="stylesheet" href="/styles/cart.css">
+</head>
+<body>
+    <%- include('../../shared/includes/header') %>
+    <main class="cart-layout">
+        <div class="cart-area">
+            <h1>Cart</h1>
+            <% if (locals.cart.items.length > 0) { %>
+                <% locals.cart.items.forEach(item => { %>
+                    <div class="cart-item">
+                        <div class="item-info">
+                            <div class="item-details">
+                                <h4><%= item.product.title %></h4>
+                                <p><%= item.product.price %>₺</p>
+                            </div>
+                            <div class="item-details-2">
+                                <p>Quantity: <%= item.quantity %></p>
+                                <button id="cancel-btn">×</button>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+                <div class="lower-info-total">
+                    <hr>
+                    <div class="total-info">
+                        <p>Total</p>
+                        <p><%= locals.cart.totalPrice %>₺</p>
+                    </div>
+                </div>
+                <div class="pay-btn">
+                    <button class="btn btn-dark">Proceed to Checkout</button>
+                </div>
+            <% } else { %>
+                <p>Your cart is empty.</p>
+            <% } %>
+        </div>
+    </main>
+    <%- include('../../shared/includes/footer') %>

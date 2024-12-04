@@ -17,9 +17,8 @@ main{
 }
 .pc-img img{
     width: 100%;
-    height: auto;
+    height: 40rem;
     max-width: 100%;
-    max-height: 35rem;
     object-fit: cover;
 }
 .pc-up-info{

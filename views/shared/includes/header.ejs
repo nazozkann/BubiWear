@@ -1,4 +1,4 @@
-<header>
+<header class="sticky">
     <nav id="desktop-menu">
         <div id="left-nav">
             <a href="/"><img src="/images/bubi-logo.png" alt="bubi-logo"></a>
@@ -34,8 +34,11 @@
                     <li>
                         <a href="/cart">
                             <div class="icon-hover">
-                                <img class="default-img" src="/images/chart-icon-ligth.png" alt="">
-                                <img class="hover-img" src="/images/chart-icon-dark.png" alt="">
+                                <div class="cart-display">
+                                    <img class="default-img" src="/images/chart-icon-ligth.png" alt="">
+                                    <div class="badge"><%= locals.cart.totalQuantity %></div>
+                                    <img class="hover-img" src="/images/chart-icon-dark.png" alt="">
+                                </div>
                             </div>
                         </a>
                     </li>
@@ -80,7 +83,7 @@
     <script src="/javascript/nav-submenu.js"></script>
 </header>
 <aside>
-    <nav id="mobile-menu">
+    <nav id="mobile-menu" class="sticky">
         <div id="left-nav">
             <a href="/"><img src="/images/bubi-logo.png" alt="bubi-logo"></a>
         </div>
@@ -90,8 +93,11 @@
                     <li>
                         <a href="/cart">
                             <div class="icon-hover">
-                                <img class="default-img" src="/images/chart-icon-ligth.png" alt="">
-                                <img class="hover-img" src="/images/chart-icon-dark.png" alt="">
+                                <div class="cart-display">
+                                    <img class="default-img" src="/images/chart-icon-ligth.png" alt="">
+                                    <div class="badge"><%= locals.cart.totalQuantity %></div>
+                                    <img class="hover-img" src="/images/chart-icon-dark.png" alt="">
+                                </div>
                             </div>
                         </a>
                     </li>
