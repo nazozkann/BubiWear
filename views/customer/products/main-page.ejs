@@ -1,8 +1,62 @@
 <%- include('../../shared/includes/head', { pageTitle: 'Bubi Wear' }) %>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="styles/main-page.css">
+<script src="javascript/main-page.js" defer></script>
 </head>
 <body>
     <%- include('../../shared/includes/header') %>
     <main>
-        <h1>Main Page</h1>
+        <div class="bubi-text">
+            <h1>
+                BUBİ <br>
+                BEST OF <br>
+                EVERYTHING
+            </h1>
+        </div>
+        <div class="slide-shows">
+            <div id="img-s-1" class="slide-show slide-show-1">
+                <div id="sd-1" class="scroll-down">
+                    <img src="/images/scroll-down.png" alt="">
+                </div>
+                <div class="slide-wrapper">
+                  <img src="/images/main-slide-1-1.png" alt="Slide 1-1">
+                  <img src="/images/main-slide-1-2.png" alt="Slide 1-2">
+                  <img src="/images/main-slide-1-3.png" alt="Slide 1-3">
+                  <img src="/images/main-slide-1-4.png" alt="Slide 1-4">
+                </div>
+              </div>
+              <div class="slide-show slide-show-2">
+                <div id="sd-2" class="scroll-down">
+                    <img src="/images/scroll-down.png" alt="">
+                </div>
+                <div class="slide-wrapper">
+                  <img src="/images/main-slide-2-1.png" alt="Slide 2-1">
+                  <img src="/images/main-slide-2-2.png" alt="Slide 2-2">
+                  <img src="/images/main-slide-2-3.png" alt="Slide 2-3">
+                  <img src="/images/main-slide-2-4.png" alt="Slide 2-4">
+                </div>
+              </div>
+              <div class="slide-show slide-show-3">
+                <div id="sd-3" class="scroll-down">
+                    <img src="/images/scroll-down.png" alt="">
+                </div>
+                <div class="slide-wrapper">
+                  <img src="/images/main-slide-3-1.png" alt="Slide 3-1">
+                  <img src="/images/main-slide-3-2.png" alt="Slide 3-2">
+                  <img src="/images/main-slide-3-3.png" alt="Slide 3-3">
+                  <img src="/images/main-slide-3-4.png" alt="Slide 3-4">
+                </div>
+              </div>
+              <div class="slide-show slide-show-4">
+                <div class="slide-wrapper">
+                  <img src="/images/main-slide-4-1.png" alt="Slide 4-1">
+                  <img src="/images/main-slide-4-2.png" alt="Slide 4-2">
+                  <img src="/images/main-slide-4-3.png" alt="Slide 4-3">
+                  <img src="/images/main-slide-4-4.png" alt="Slide 4-4">
+                </div>
+              </div>
+        </div>
     </main>
-<%- include('../../shared/includes/footer') %>
+
+    <%- include('../../shared/includes/footer') %>
+</body>

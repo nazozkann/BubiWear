@@ -1,7 +1,7 @@
 const addCartButtonElement = document.querySelector('.product-details-add-to button');
 const cartBadgeElements = document.querySelectorAll('nav .badge');
 const cartItemElements = document.querySelectorAll('.cart-item');
-const cancelButtons = document.querySelectorAll('#cancel-btn');
+const cancelButtons = document.querySelectorAll('.cancel-btn');
 
 async function addCart() {
     const productId = addCartButtonElement.dataset.productId;
@@ -50,6 +50,10 @@ async function removeCartItem(event) {
     try {
         response = await fetch(`/cart/items/${productId}`, {
             method: 'DELETE',
+            body: JSON.stringify({
+                productId: productId,
+                _csrf: csrfToken
+            }),
             headers: {
                 'Content-Type': 'application/json',
                 'CSRF-Token': csrfToken
@@ -66,13 +70,34 @@ async function removeCartItem(event) {
     }
 
     const responseData = await response.json();
-    button.closest('.cart-item').remove();
+    const cartItemElement = button.closest('.cart-item');
+    const quantityElement = cartItemElement.querySelector('.item-details-2 p');
+    const totalPriceElement = document.querySelector('.total-info p:last-child');
+    const cartAreaElement = document.querySelector('.cart-area');
+
+    if (responseData.newQuantity > 0) {
+        quantityElement.textContent = `Quantity: ${responseData.newQuantity}`;
+    } else {
+        cartItemElement.remove();
+    }
+
+    totalPriceElement.textContent = `${responseData.newTotalPrice.toFixed(2)}₺`;
+
     cartBadgeElements.forEach((badge) => {
         badge.textContent = responseData.newTotalItems;
     });
+
+    if (responseData.newTotalItems === 0) {
+        cartAreaElement.innerHTML = '<p>Your cart is empty.</p>';
+    }
 }
 
-addCartButtonElement.addEventListener('click', addCart);
-cancelButtons.forEach(button => {
-    button.addEventListener('click', removeCartItem);
-});
+if (addCartButtonElement) {
+    addCartButtonElement.addEventListener('click', addCart);
+}
+
+if (cancelButtons.length > 0) {
+    cancelButtons.forEach(button => {
+        button.addEventListener('click', removeCartItem);
+    });
+}

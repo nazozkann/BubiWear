@@ -200,7 +200,7 @@ nav {
     font-size: 2rem;
 }
 
-@media (min-width: 48rem) {
+@media (min-width: 64rem) {
     #mobile-menu-btn{
         display: none;
     }

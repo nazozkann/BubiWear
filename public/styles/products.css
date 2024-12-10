@@ -17,7 +17,7 @@ main{
 }
 .pc-img img{
     width: 100%;
-    height: 40rem;
+    height: 70vh;
     max-width: 100%;
     object-fit: cover;
 }
@@ -87,7 +87,7 @@ main{
     justify-content: space-between;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 64rem) {
     .product-grid {
         grid-template-columns: 1fr; /* Her satırda 1 sütun */
     }

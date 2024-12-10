@@ -47,12 +47,16 @@
     margin-bottom: 3rem;
     margin-top: 5rem;
 }
-#cancel-btn{
+.cancel-btn{
     all: unset;
     color: var(--color-text-ligth);
 }
-#cancel-btn:hover{
+.cancel-btn:hover{
     all: unset;
     color: var(--color-text-btn-dark);
     cursor: pointer;
+}
+#your-empty-cart {
+    margin-left: 0;
+    font-size: 1rem;
 }

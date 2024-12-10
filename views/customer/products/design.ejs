@@ -1,0 +1,57 @@
+<%- include('../../shared/includes/head', { pageTitle: 'Design' }) %>
+<link rel="stylesheet" href="/styles/design.css">
+<link rel="stylesheet" href="/styles/base.css">
+<script src="/javascript/design.js" defer></script>
+</head>
+<body>
+    <%- include('../../shared/includes/header') %>
+    <main class="design-page-layout">
+        <div class="select-color">
+            <p>Select Color</p>
+            <div class="colors">
+                <div class="black"></div>
+                <div class="white"></div>
+                <div class="grey"></div>
+            </div>
+        </div>
+        <div class="add-design">
+            <div class="user-design-interaction">
+                <div id="image-upload-front" class="image-upload">
+                    <div class="upload-image-info">
+                        <div id="front-border" class="design-border">
+                            <div id="uploaded-image-container-front" class="uploaded-image-container"></div>
+                        </div>
+                    </div>
+                    <img class="template" src="/images/design-front.png" alt="">
+                    <div class="upload-image-bottom-info">
+                        <p class="upload-text">Upload Your Image Here</p>
+                        <form id="upload-form-front" action="/upload" method="POST" enctype="multipart/form-data">
+                            <input id="file-input-front" type="file" name="designImageFront" accept="image/*" style="display: none;">
+                            <img id="upload-trigger-front" class="upload-img" src="/images/upload.png" alt="Upload Icon">
+                        </form>
+                    </div>
+                    <div class="back-btn">
+                        <button id="back-btn" class="direction-btn">Back</button>
+                    </div>
+                </div>
+                <div id="image-upload-back" class="image-upload" style="display: none;">
+                    <div id="back-border" class="design-border">
+                        <p>Upload Your Image Here</p>
+                        <form id="upload-form-back" action="/upload" method="POST" enctype="multipart/form-data">
+                            <input id="file-input-back" type="file" name="designImageBack" accept="image/*" style="display: none;">
+                            <img id="upload-trigger-back" class="upload-img" src="/images/upload.png" alt="Upload Icon" style="cursor: pointer;">
+                        </form>
+                        <div id="uploaded-image-container-back" class="uploaded-image-container"></div>
+                    </div>
+                    <img class="template" src="/images/design-back.png" alt="">
+                    <div class="front-btn">
+                        <button id="front-btn" class="direction-btn">Front</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="chart-area">
+            <button id="add-to-chart-design">Add To Chart</button>
+        </div>
+    </main>
+<%- include('../../shared/includes/footer') %>

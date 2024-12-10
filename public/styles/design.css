@@ -1,0 +1,158 @@
+body, html {
+    overflow: hidden;
+}
+.design-page-layout {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 100vh;
+    overflow: hidden;
+}
+.select-color {
+    display: flex;
+    flex-direction: column;
+    margin-left: 2rem;
+    margin-top: 2rem;
+    flex: 1;
+}
+.colors{
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+}
+.black{
+    height: 1rem;
+    width: 1rem;
+    border-radius: 1rem;
+    background-color: var(--color-ts-1);
+}
+.white{
+    height: 1rem;
+    width: 1rem;
+    border-radius: 1rem;
+    background-color: var(--color-ts-2);
+}
+.grey{
+    height: 1rem;
+    width: 1rem;
+    border-radius: 1rem;
+    background-color: var(--color-ts-3);
+}
+.add-design {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 45rem;
+    background-color: var(--color-form-bg);
+    text-align: center;
+    overflow: visible; /* Ensure overflow is visible */
+}
+.chart-area{
+    display: flex;
+    flex-direction: column;
+    margin-right: 2rem;
+    flex: 1;
+    margin-top: 3rem;
+    align-items: end;
+}
+#add-to-chart-design {
+    width: 8rem;
+    height: 2rem;
+    margin-right: 0;
+    border: none;
+    background-color: var(--color-text-btn-dark);
+    border-radius: 0.25rem;
+    color: var(--color-text-btn-ligth);
+    cursor: pointer;
+}
+#add-to-chart-design:hover {
+    background-color: var(--color-text-btn-dark-hover);
+}
+.user-design-interaction {
+    margin-top: 16rem;
+}
+.template {
+    width: 100%;
+    height: auto;
+    position: relative;
+    z-index: 0;
+}
+.design-border {
+    width: 18rem;
+    height: 29rem;
+    border: dashed 0.25rem var(--color-ts-1);
+    border-radius: 2rem;
+    margin-bottom: -40rem;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    justify-content: center;
+}
+.upload-img {
+    width: 5rem;
+    height: auto;
+    cursor: pointer;
+    z-index: 6; /* Ensure it is above other elements */
+    position: relative; /* Ensure it is positioned correctly */
+}
+.upload-image-info {
+    position: relative;
+    z-index: 3;
+}
+.direction-btn {
+    width: 8rem;
+    height: 2rem;
+    border: none;
+    background-color: var(--color-text-btn-dark);
+    border-radius: 0.25rem;
+    color: var(--color-text-btn-ligth);
+    cursor: pointer;
+    margin-top: 13rem;
+}
+.direction-btn:hover {
+    background-color: var(--color-text-btn-dark-hover);
+}
+.uploaded-image-container {
+    position: absolute; /* Tasarım sınırları içinde konumlandırılır */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 8;
+}
+.uploaded-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    cursor: move;
+    z-index: 8;
+}
+.upload-image-bottom-info {
+    position: relative;
+    margin-top: -23rem;
+    z-index: 7;
+}
+.upload-text{
+    z-index: 7;
+}
+.move-tool {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    user-select: none;
+}
+.resize-handle {
+    position: absolute;
+    z-index: 6; /* Varsayılan z-index */
+    width: 1rem;
+    height: 1rem;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    cursor: se-resize;
+    pointer-events: auto;
+}

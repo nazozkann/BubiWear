@@ -24,20 +24,32 @@ class Cart {
 
         this.totalQuantity++;
         this.totalPrice += product.price;
+        return;
     }
 
     removeItem(productId) {
         const cartItemIndex = this.items.findIndex(item => item.product.id === productId);
         if (cartItemIndex < 0) {
-            return;
+            return null;
         }
-
+    
         const cartItem = this.items[cartItemIndex];
-        this.totalQuantity -= cartItem.quantity;
-        this.totalPrice -= cartItem.totalPrice;
-
-        this.items.splice(cartItemIndex, 1);
+    
+        if (cartItem.quantity > 1) {
+            cartItem.quantity--;
+            cartItem.totalPrice -= cartItem.product.price;
+            this.totalQuantity--;
+            this.totalPrice -= cartItem.product.price;
+            return cartItem;
+        } else {
+            this.totalQuantity -= cartItem.quantity;
+            this.totalPrice -= cartItem.totalPrice;
+            this.items.splice(cartItemIndex, 1);
+            return null;
+        }
     }
 }
 
 module.exports = Cart;
+
+

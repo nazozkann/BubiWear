@@ -1,10 +1,11 @@
 <%- include('../../shared/includes/head', { pageTitle: 'Your Cart' }) %>
 <link rel="stylesheet" href="/styles/cart.css">
+<script src="/javascript/cart-management.js" defer></script>
 </head>
 <body>
     <%- include('../../shared/includes/header') %>
     <main class="cart-layout">
-        <div class="cart-area">
+        <div class="cart-area" id="cart-area">
             <h1>Cart</h1>
             <% if (locals.cart.items.length > 0) { %>
                 <% locals.cart.items.forEach(item => { %>
@@ -16,7 +17,8 @@
                             </div>
                             <div class="item-details-2">
                                 <p>Quantity: <%= item.quantity %></p>
-                                <button id="cancel-btn">×</button>
+                                <button class="cancel-btn" data-product-id="<%= item.product.id %>" 
+                                    data-csrf="<%= csrfToken %>">×</button>
                             </div>
                         </div>
                     </div>
@@ -25,14 +27,17 @@
                     <hr>
                     <div class="total-info">
                         <p>Total</p>
-                        <p><%= locals.cart.totalPrice %>₺</p>
+                        <p><%= locals.cart.totalPrice.toFixed(2) %>₺</p>
                     </div>
                 </div>
                 <div class="pay-btn">
-                    <button class="btn btn-dark">Proceed to Checkout</button>
+                    <form action="/orders" method="POST">
+                        <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>">
+                        <button class="btn btn-dark">Proceed to Checkout</button>
+                    </form>
                 </div>
             <% } else { %>
-                <p>Your cart is empty.</p>
+                <p id="your-empty-cart">Your cart is empty.</p>
             <% } %>
         </div>
     </main>

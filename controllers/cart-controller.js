@@ -29,12 +29,14 @@ async function addCartItem(req, res, next) {
 async function removeCartItem(req, res, next) {
     const productId = req.params.productId;
     const cart = res.locals.cart;
-    cart.removeItem(productId);
+    const updatedItem = cart.removeItem(productId);
     req.session.cart = cart;
 
     res.status(200).json({
         message: 'Item removed.',
-        newTotalItems: cart.totalQuantity
+        newTotalItems: cart.totalQuantity,
+        newQuantity: updatedItem ? updatedItem.quantity : 0,
+        newTotalPrice: cart.totalPrice
     });
 }
 

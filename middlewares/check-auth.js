@@ -11,4 +11,5 @@ function checkAuthStatus(req,res,next){
     next();
 }
 
+
 module.exports = checkAuthStatus;

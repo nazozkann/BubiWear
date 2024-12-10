@@ -39,6 +39,7 @@ async function signup(req,res,next) {
     }
 
     const user = new User(
+        null, // Add this line for the id parameter
         req.body.email,
         req.body.password,
         req.body.fullname
@@ -77,7 +78,7 @@ function getSignin(req,res){
 }
 
 async function signin(req,res, next) {
-    const user = new User(req.body.email, req.body.password);
+    const user = new User(null, req.body.email, req.body.password); // Add null for the id parameter
     let existingUser;
     try {
       existingUser = await user.getUserWithSameEmail();
