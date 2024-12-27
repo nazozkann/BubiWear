@@ -4,7 +4,7 @@ const User = require('../models/user-model');
 async function getOrders(req, res,next) {
     try {
       const orders = await Order.findAllForUser(res.locals.uid);
-      res.render('customer/orders/all-orders', {
+      res.render('admin/orders/all-orders', {
         orders: orders,
       });
     } catch (error) {
@@ -22,7 +22,11 @@ async function addOrder(req,res, next) {
         return next(error);
     }
 
-    const order = new Order(cart, userDocument);
+    const order = new Order(cart, {
+        _id: userDocument._id,
+        email: userDocument.email,
+        fullname: userDocument.fullname,
+    });
 
     try{
         await order.save();
@@ -33,7 +37,7 @@ async function addOrder(req,res, next) {
 
     req.session.cart = null;
 
-    res.redirect('/orders');
+    res.redirect('/cart/checkout');
 }
 
 async function updateOrderStatus(req, res, next) {

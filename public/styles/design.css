@@ -2,58 +2,98 @@ body, html {
     overflow: hidden;
 }
 .design-page-layout {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    display: inline-block;
     height: 100vh;
     overflow: hidden;
 }
 .select-color {
+    position: absolute;
     display: flex;
     flex-direction: column;
     margin-left: 2rem;
     margin-top: 2rem;
-    flex: 1;
+    z-index: 6; /* Ensure it is above add-design */
+    height: auto; /* Ensure height matches content */
+    box-sizing: border-box;
 }
 .colors{
     display: flex;
     flex-direction: row;
     gap: 0.5rem;
 }
-.black{
-    height: 1rem;
-    width: 1rem;
-    border-radius: 1rem;
+.colors input[type="radio"] {
+    display: none;
+}
+.colors label {
+    height: 1.5rem;
+    width: 1.5rem;
+    border-radius: 1.5rem;
+    cursor: pointer;
+}
+.colors .black {
     background-color: var(--color-ts-1);
 }
-.white{
-    height: 1rem;
-    width: 1rem;
-    border-radius: 1rem;
+.colors .white {
     background-color: var(--color-ts-2);
 }
-.grey{
-    height: 1rem;
-    width: 1rem;
-    border-radius: 1rem;
+.colors .grey {
     background-color: var(--color-ts-3);
 }
+.colors input[type="radio"]:checked + label {
+    border: solid 0.2rem var(--color-primary-orange);
+}
+.black{
+    height: 1.5rem;
+    width: 1.5rem;
+    border-radius: 1.5rem;
+    background-color: var(--color-ts-1);
+    cursor: pointer;
+}
+.white{
+    height: 1.5rem;
+    width: 1.5rem;
+    border-radius: 1.5rem;
+    background-color: var(--color-ts-2);
+    cursor: pointer;
+}
+.grey{
+    height: 1.5rem;
+    width: 1.5rem;
+    border-radius: 1.5rem;
+    background-color: var(--color-ts-3);
+    cursor: pointer;
+}
+.black:hover, .white:hover, .grey:hover{
+    border: solid 0.2rem var(--color-primary-orange);
+}
 .add-design {
+    position: absolute;
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 45rem;
+    height: 100%;
+    padding-top: 5rem;
     background-color: var(--color-form-bg);
     text-align: center;
     overflow: visible; /* Ensure overflow is visible */
+    z-index: 5;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 .chart-area{
     display: flex;
     flex-direction: column;
-    margin-right: 2rem;
     flex: 1;
+    margin-right: 2rem;
     margin-top: 3rem;
     align-items: end;
+    z-index: 6; /* Ensure it is above add-design */
+    height: auto; /* Ensure height matches content */
+    box-sizing: border-box;
+    position: absolute;
+    right: 0;
 }
 #add-to-chart-design {
     width: 8rem;
@@ -111,6 +151,8 @@ body, html {
     border-radius: 0.25rem;
     color: var(--color-text-btn-ligth);
     cursor: pointer;
+    position: relative; /* Container içinde sabit kalması için */
+    z-index: 15; /* Görsel ve diğer elemanların üstünde olması için */
     margin-top: 13rem;
 }
 .direction-btn:hover {
@@ -131,7 +173,26 @@ body, html {
     cursor: move;
     z-index: 8;
 }
-.upload-image-bottom-info {
+.close-button {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1.25rem;
+    height: 1.25rem;
+    background-color: var(--color-primary-orange);
+    color: white;
+    text-align: center;
+    line-height: 1.5rem;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+}
+.upload-image-bottom-info-front {
+    position: relative;
+    margin-top: -23rem;
+    z-index: 7;
+}
+.upload-image-bottom-info-back {
     position: relative;
     margin-top: -23rem;
     z-index: 7;
@@ -146,13 +207,30 @@ body, html {
     border-radius: 0.25rem;
     user-select: none;
 }
-.resize-handle {
+.resize-handle-front {
     position: absolute;
-    z-index: 6; /* Varsayılan z-index */
+    z-index: 9; /* Varsayılan z-index */
     width: 1rem;
     height: 1rem;
     background-color: rgba(0, 0, 0, 0.5);
     border-radius: 50%;
     cursor: se-resize;
     pointer-events: auto;
+}
+.resize-handle-back {
+    position: absolute;
+    z-index: 9; /* Varsayılan z-index */
+    width: 1rem;
+    height: 1rem;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    cursor: se-resize;
+    pointer-events: auto;
+}
+
+#image-upload-front {
+    display: block;
+}
+#image-upload-back {
+    display: none;
 }

@@ -1,0 +1,42 @@
+<%- include('../../shared/includes/head', { pageTitle: 'Checkout' }) %>
+<link rel="stylesheet" href="/styles/cart.css">
+<script src="/javascript/cart-management.js" defer></script>
+</head>
+<body>
+    <%- include('../../shared/includes/header') %>
+    <main class="cart-layout">
+        <div class="cart-area" id="cart-area">
+            <div class="addresses">
+                <p>Choose an address or add</p>
+                <ul class="address-grid">
+                    <% for (const address of addresses) { %>
+                        <% if (address) { %> 
+                            <div class="address-item">
+                                <input 
+                                    type="radio" 
+                                    id="address-<%= address.id %>" 
+                                    name="address" 
+                                    value="<%= address.id %>" 
+                                    form="checkout-form" 
+                                    required
+                                >
+                                <label class="address-label" for="address-<%= address.id %>">
+                                    <%- include('./address-item', { address: address, fromProfile: false }) %>
+                                </label>
+                            </div>
+                        <% }  %>
+                    <% } %>
+                    <li>
+                        <a href="/cart/add-address" class="add-address-btn">Add Address</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="pay-btn">
+                <form action="/orders" method="POST" id="checkout-form">
+                    <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>">
+                    <button class="btn btn-dark">Proceed to Checkout</button>
+                </form>
+            </div>
+        </div>
+    </main>
+    <%- include('../../shared/includes/footer') %>

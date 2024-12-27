@@ -21,11 +21,15 @@
             <h2><%= product.title %></h2>
             <p><%= product.price %> ₺</p>
             <% if (locals.isAdmin) { %>
-            <button class="btn btn-dark delete-btn" data-productid="<%= product.id %>" data-csrf="<%= locals.csrfToken %>">Delete</button>
+            <form action="/admin/products/<%= product.id %>?_method=DELETE" method="POST">
+                <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>">
+                <button class="btn btn-dark delete-btn" data-productid="<%= product.id %>">Delete</button>
+            </form>
             <% } %>
         </div>
         <div class="pc-down-fav">
-            <img src="/images/fav-icon-ligth.png" alt="">
+            <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>">
+            <img class="fav-icon" src="" alt="Favorite Icon" data-isauth="<%= locals.isAuth %>" data-productid="<%= product.id %>" data-title="<%= product.title %>" data-price="<%= product.price %>" data-imageurl="<%= product.imageUrls[0] %>" data-isfavorite="<%= user && user.favorites && user.favorites.map(fav => fav.toString()).includes(product.id.toString()) %>">
         </div>
     </div>
 </article>

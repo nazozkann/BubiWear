@@ -1,11 +1,16 @@
-const addCartButtonElement = document.querySelector('.product-details-add-to button');
+const addCartButtonElement = document.querySelector('.button-upload');
 const cartBadgeElements = document.querySelectorAll('nav .badge');
 const cartItemElements = document.querySelectorAll('.cart-item');
 const cancelButtons = document.querySelectorAll('.cancel-btn');
 
-async function addCart() {
-    const productId = addCartButtonElement.dataset.productId;
-    const csrfToken = addCartButtonElement.dataset.csrf;
+async function addCart(event) {
+    event.preventDefault(); // Prevent form submission
+
+    const form = document.getElementById('add-to-cart-form'); // Get the form element
+    const formData = new FormData(form); // Read the form content
+
+    const productId = formData.get('productId'); // Get the productId value from the form
+    const csrfToken = formData.get('_csrf'); // Get the CSRF token value from the form
 
     let response;
     try {
@@ -34,24 +39,25 @@ async function addCart() {
     const newTotalQuantity = responseData.newTotalItems;
 
     cartBadgeElements.forEach((badge) => {
-        badge.style.display = 'none'; // Yeniden çizimi tetikle
-        badge.offsetHeight; // Akışı yeniden başlat
-        badge.style.display = ''; // Tekrar görünür yap
-        badge.textContent = newTotalQuantity; // Yeni değeri ata
+        badge.style.display = 'none'; // Trigger reflow
+        badge.offsetHeight; // Restart the flow
+        badge.style.display = ''; // Make it visible again
+        badge.textContent = newTotalQuantity; // Set the new value
     });
+
+    window.location.href = '/cart'; // Redirect to the cart page
 }
 
 async function removeCartItem(event) {
     const button = event.target;
-    const productId = button.dataset.productId;
+    const itemId = button.dataset.itemId;
     const csrfToken = button.dataset.csrf;
 
     let response;
     try {
-        response = await fetch(`/cart/items/${productId}`, {
+        response = await fetch(`/cart/items/${itemId}`, {
             method: 'DELETE',
             body: JSON.stringify({
-                productId: productId,
                 _csrf: csrfToken
             }),
             headers: {
@@ -94,6 +100,7 @@ async function removeCartItem(event) {
 
 if (addCartButtonElement) {
     addCartButtonElement.addEventListener('click', addCart);
+    res.render('checkout')
 }
 
 if (cancelButtons.length > 0) {
@@ -101,3 +108,63 @@ if (cancelButtons.length > 0) {
         button.addEventListener('click', removeCartItem);
     });
 }
+
+const checkoutForm = document.getElementById('checkout-form');
+
+if (checkoutForm) {
+    checkoutForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        fetch('/cart/checkout', {
+            method: 'POST',
+            body: new URLSearchParams(new FormData(checkoutForm)),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        }).then(response => {
+            if (response.ok) {
+                window.location.href = '/cart/checkout';
+            } else {
+                alert('Something went wrong!');
+            }
+        }).catch(error => {
+            alert('Something went wrong!');
+        });
+    });
+}
+
+const deleteAddressButtonElements = document.querySelectorAll('.delete-btn');
+
+async function deleteAddress(event) {
+    event.preventDefault();
+    const buttonElement = event.target;
+    const addressId = buttonElement.dataset.productid;
+    const csrfToken = buttonElement.dataset.csrf;
+    const redirectParam = buttonElement.dataset.redirect; // "profile" or "cart"
+
+    try {
+        const response = await fetch(`/cart/update-address/${addressId}?_csrf=${csrfToken}&redirect=${redirectParam}`, {
+            method: 'DELETE'
+        });
+        if (!response.ok) {
+            throw new Error('Failed to delete address.');
+        }
+
+        const responseData = await response.json();
+        // Remove outer container so radio button is also removed
+        buttonElement.closest('article.address-item').closest('div.address-item').remove();
+
+        // Optionally redirect the user if needed:
+        if (responseData.redirect === 'profile') {
+            window.location.href = '/profile/addresses';
+        } else {
+            window.location.href = '/cart/checkout';
+        }
+    } catch (error) {
+        alert('An error occurred while deleting the address: ' + error.message);
+    }
+}
+
+// Delete butonlarına event listener ekle
+deleteAddressButtonElements.forEach(button => {
+    button.addEventListener('click', deleteAddress);
+});

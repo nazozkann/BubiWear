@@ -3,6 +3,7 @@ const express = require('express');
 const ejs = require('ejs');
 const csrf = require('csurf');
 const expressSession = require('express-session');
+const initializeCart = require('./middlewares/cart'); // Import the initializeCart middleware
 
 const createSessionConfig = require('./config/session');
 const db = require('./data/database');
@@ -27,7 +28,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'))); 
 app.use('/products/assets', express.static(path.join(__dirname, 'product-data'))); 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -37,7 +38,13 @@ const sessionConfig = createSessionConfig();
 app.use(expressSession(sessionConfig));
 app.use(csrf());
 
+app.use((req, res, next) => {
+    res.locals.csrfToken = req.csrfToken();
+    next();
+});
+
 app.use(cartMiddleware);
+app.use(initializeCart); // Add this line to initialize the cart for every request
 
 app.use(addCsrfTokenMiddleware);
 app.use(checkAuthStatusMiddleware);
@@ -50,6 +57,8 @@ app.use('/cart', cartRoutes);
 app.use(protectRoutesMiddleware);
 app.use('/orders', ordersRoutes);
 app.use('/admin', adminRoutes);
+
+
 
 // Add the error handlers
 app.use(handleErrors);

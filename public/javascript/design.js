@@ -1,66 +1,140 @@
 document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('upload-trigger-front').addEventListener('click', function () {
-        document.getElementById('file-input-front').click();
-    });
+    setupImageUpload('front');
+    setupImageUpload('back');
 
-    document.getElementById('file-input-front').addEventListener('change', function (event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                const img = document.createElement('img');
-                img.src = e.target.result;
-                img.className = 'uploaded-image';
-                img.style.width = '50%'; // Set width to half of the design border
-                img.style.height = 'auto'; // Maintain aspect ratio
-                img.style.position = 'absolute';
-                img.style.top = '0px';
-                img.style.left = '0px';
-
-                const container = document.getElementById('uploaded-image-container-front');
-                container.innerHTML = ''; // Clear any existing images
-                container.appendChild(img);
-
-                // Add resize handle
-                const resizeHandle = document.createElement('div');
-                resizeHandle.className = 'resize-handle';
-                img.parentElement.appendChild(resizeHandle);
-
-                // Position resize handle relative to the image
-                updateResizeHandlePosition(img, resizeHandle);
-
-                // Add drag functionality to the uploaded image
-                addDragFunctionality(img, resizeHandle);
-
-                // Add resize functionality
-                addResizeFunctionality(img, resizeHandle);
-
-                // Hide the upload instructions
-                const uploadInfo = document.querySelector('.upload-image-bottom-info');
-                if (uploadInfo) {
-                    uploadInfo.style.display = 'none';
-                }
-            };
-            reader.readAsDataURL(file);
-        }
+    document.getElementById('front-btn').addEventListener('click', function () {
+        document.getElementById('image-upload-back').style.display = 'block';
+        document.getElementById('image-upload-front').style.display = 'none';
+        updateZIndex('back');
     });
 
     document.getElementById('back-btn').addEventListener('click', function () {
-        document.getElementById('image-upload-front').style.display = 'none';
-        document.getElementById('image-upload-back').style.display = 'block';
+        document.getElementById('image-upload-front').style.display = 'block';
+        document.getElementById('image-upload-back').style.display = 'none';
+        updateZIndex('front');
     });
 
-    document.getElementById('front-btn').addEventListener('click', function () {
-        document.getElementById('image-upload-back').style.display = 'none';
-        document.getElementById('image-upload-front').style.display = 'block';
+    const designForm = document.getElementById('design-form');
+    const addToChartButton = document.getElementById('add-to-chart-design');
+
+    addToChartButton.addEventListener('click', function (event) {
+        event.preventDefault(); // Varsayılan submit davranışını engelle
+        console.log('Button clicked. Sending form data.');
+
+        const selectedColor = document.querySelector('input[name="color"]:checked');
+        const frontImage = document.querySelector('#uploaded-image-container-front img');
+        const backImage = document.querySelector('#uploaded-image-container-back img');
+
+        if (!selectedColor || (!frontImage && !backImage)) {
+            alert('Please select a color and upload at least one image.');
+        } else {
+            // Formu manuel olarak gönder
+            designForm.submit();
+        }
     });
+
+    function setupImageUpload(side) {
+        const uploadTrigger = document.getElementById(`upload-trigger-${side}`);
+        const fileInput = document.getElementById(`file-input-${side}`);
+        const container = document.getElementById(`uploaded-image-container-${side}`);
+        const designBorder = document.getElementById(`${side}-border`);
+        const uploadInfo = document.querySelector(`.upload-image-bottom-info-${side}`);
+        const resizeHandleClass = `resize-handle-${side}`;
+
+        uploadTrigger.addEventListener('click', function () {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = `uploaded-image-${side}`;
+                    img.style.width = '50%';
+                    img.style.height = 'auto';
+                    img.style.position = 'absolute';
+                    img.style.top = '0';
+                    img.style.left = '0';
+        
+                    container.innerHTML = '';
+                    container.appendChild(img);
+        
+                    const resizeHandle = document.createElement('div');
+                    resizeHandle.className = resizeHandleClass;
+                    container.appendChild(resizeHandle);
+
+                    // Add close button
+                    const closeButton = document.createElement('div');
+                    closeButton.className = 'close-button';
+                    closeButton.innerHTML = '&times;';
+                    closeButton.style.position = 'absolute';
+                    closeButton.style.cursor = 'pointer';
+                    closeButton.style.zIndex = '10';
+                    container.appendChild(closeButton);
+
+                    closeButton.addEventListener('click', function () {
+                        container.innerHTML = '';
+                        if (uploadInfo) {
+                            uploadInfo.style.display = 'block';
+                        }
+                        updatePrice();
+                    });
+        
+                    img.onload = function () {
+                        if (img.offsetWidth === 0 || img.offsetHeight === 0) {
+                            console.warn('Image has no dimensions, forcing reflow...');
+                            forceRepaint(img);
+                        }
+        
+                        updateResizeHandlePosition(img, resizeHandle);
+                        updateCloseButtonPosition(img, closeButton);
+                        addDragFunctionality(img, resizeHandle, closeButton, designBorder);
+                        addResizeFunctionality(img, resizeHandle, closeButton, designBorder);
+        
+                        // Yalnızca "Upload Your Image Here" yazısını gizle
+                        const uploadText = uploadInfo.querySelector('.upload-text');
+                        if (uploadText) {
+                            uploadText.style.display = 'none';
+                        }
+        
+                        // Butonların her zaman görünür olduğundan emin ol
+                        const directionBtn = document.querySelector(`.${side}-btn`);
+                        if (directionBtn) {
+                            directionBtn.style.display = 'block';
+                            directionBtn.style.marginTop = '3.2rem';
+                        }
+        
+                        updateZIndex(side);
+                        updatePrice();
+                    };
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    function forceRepaint(element) {
+        // Force the browser to recalculate the layout
+        const display = element.style.display;
+        element.style.display = 'none';
+        element.offsetHeight; // Trigger reflow
+        element.style.display = display;
+    }
 
     function updateResizeHandlePosition(img, resizeHandle) {
         resizeHandle.style.top = `${img.offsetTop + img.offsetHeight - 10}px`;
         resizeHandle.style.left = `${img.offsetLeft + img.offsetWidth - 10}px`;
     }
 
-    function addDragFunctionality(img, resizeHandle) {
+    function updateCloseButtonPosition(img, closeButton) {
+        closeButton.style.top = `${img.offsetTop}px`;
+        closeButton.style.left = `${img.offsetLeft}px`;
+    }
+
+    function addDragFunctionality(img, resizeHandle, closeButton, designBorder) {
         let startX = 0, startY = 0, offsetX = 0, offsetY = 0, isDragging = false;
 
         img.addEventListener('mousedown', function (e) {
@@ -74,16 +148,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
             document.addEventListener('mousemove', mouseMove);
             document.addEventListener('mouseup', mouseUp);
-
-            // Ensure image is above everything else while dragging
-            img.style.zIndex = '10';
-            resizeHandle.style.zIndex = '11';
         });
 
         function mouseMove(e) {
             if (!isDragging) return;
 
-            const designBorder = document.getElementById('front-border');
             const rect = designBorder.getBoundingClientRect();
 
             let newLeft = offsetX + (e.clientX - startX);
@@ -96,20 +165,17 @@ document.addEventListener('DOMContentLoaded', function () {
             img.style.top = `${newTop}px`;
 
             updateResizeHandlePosition(img, resizeHandle);
+            updateCloseButtonPosition(img, closeButton);
         }
 
         function mouseUp() {
             isDragging = false;
             document.removeEventListener('mousemove', mouseMove);
             document.removeEventListener('mouseup', mouseUp);
-
-            // Reset z-index after dragging
-            img.style.zIndex = '1';
-            resizeHandle.style.zIndex = '2';
         }
     }
 
-    function addResizeFunctionality(img, resizeHandle) {
+    function addResizeFunctionality(img, resizeHandle, closeButton, designBorder) {
         let startX = 0, startWidth = 0, aspectRatio = img.offsetWidth / img.offsetHeight, isResizing = false;
 
         resizeHandle.addEventListener('mousedown', function (e) {
@@ -120,18 +186,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
             document.addEventListener('mousemove', mouseMove);
             document.addEventListener('mouseup', mouseUp);
-
-            // Ensure resize handle is active
-            resizeHandle.style.zIndex = '12';
-            img.style.zIndex = '11';
         });
 
         function mouseMove(e) {
             if (!isResizing) return;
 
-            const designBorder = document.getElementById('front-border');
             const rect = designBorder.getBoundingClientRect();
-
             const widthChange = e.clientX - startX;
             const newWidth = Math.max(50, startWidth + widthChange); // Minimum width: 50px
             const newHeight = newWidth / aspectRatio;
@@ -142,8 +202,8 @@ document.addEventListener('DOMContentLoaded', function () {
             ) {
                 img.style.width = `${newWidth}px`;
                 img.style.height = `${newHeight}px`;
-
                 updateResizeHandlePosition(img, resizeHandle);
+                updateCloseButtonPosition(img, closeButton);
             }
         }
 
@@ -151,10 +211,38 @@ document.addEventListener('DOMContentLoaded', function () {
             isResizing = false;
             document.removeEventListener('mousemove', mouseMove);
             document.removeEventListener('mouseup', mouseUp);
-
-            // Reset z-index after resizing
-            img.style.zIndex = '1';
-            resizeHandle.style.zIndex = '2';
         }
     }
+
+    function updateZIndex(side) {
+        const frontContainer = document.getElementById('uploaded-image-container-front');
+        const backContainer = document.getElementById('uploaded-image-container-back');
+        if (side === 'front') {
+            frontContainer.style.zIndex = '10';
+            backContainer.style.zIndex = '5';
+        } else {
+            frontContainer.style.zIndex = '5';
+            backContainer.style.zIndex = '10';
+        }
+    }
+
+    function updatePrice() {
+        const frontImage = document.querySelector('#uploaded-image-container-front img');
+        const backImage = document.querySelector('#uploaded-image-container-back img');
+        const priceElement = document.querySelector('.design-price');
+        let price = 0;
+
+        if (frontImage || backImage) price = 500;
+        if (backImage && frontImage) price = 800;
+
+        if (price > 0) {
+            priceElement.style.display = 'block';
+            priceElement.querySelector('#price-info').innerText = price;
+        } else {
+            priceElement.style.display = 'none';
+        }
+    }
+
+    // Initial call to hide the price element
+    updatePrice();
 });

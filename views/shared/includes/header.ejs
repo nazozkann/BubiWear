@@ -36,7 +36,7 @@
                             <div class="icon-hover">
                                 <div class="cart-display">
                                     <img class="default-img" src="/images/chart-icon-ligth.png" alt="">
-                                    <div class="badge"><%= locals.cart.totalQuantity %></div>
+                                    <div class="badge"><%= locals.cart ? locals.cart.totalQuantity : 0 %></div>
                                     <img class="hover-img" src="/images/chart-icon-dark.png" alt="">
                                 </div>
                             </div>
@@ -44,7 +44,7 @@
                     </li>
                     <% if(locals.isAuth && !locals.isAdmin) {%>
                     <li>
-                        <a href="/orders" class="icon-hover">
+                        <a href="/profile/favorites" class="icon-hover">
                             <div class="icon-hover">
                                 <img class="default-img" src="/images/profile-icon-ligth.png" alt="">
                                 <img class="hover-img" src="/images/profile-icon-dark.png" alt="">
@@ -95,7 +95,7 @@
                             <div class="icon-hover">
                                 <div class="cart-display">
                                     <img class="default-img" src="/images/chart-icon-ligth.png" alt="">
-                                    <div class="badge"><%= locals.cart.totalQuantity %></div>
+                                    <div class="badge"><%= locals.cart ? locals.cart.totalQuantity : 0 %></div>
                                     <img class="hover-img" src="/images/chart-icon-dark.png" alt="">
                                 </div>
                             </div>
@@ -103,7 +103,7 @@
                     </li>
                     <% if(locals.isAuth && !locals.isAdmin) {%>
                     <li>
-                        <a href="/profile" class="icon-hover">
+                        <a href="/profile/favorites" class="icon-hover">
                             <div class="icon-hover">
                                 <img class="default-img" src="/images/profile-icon-ligth.png" alt="">
                                 <img class="hover-img" src="/images/profile-icon-dark.png" alt="">

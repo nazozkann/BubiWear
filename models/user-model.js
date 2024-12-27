@@ -1,16 +1,18 @@
 const bcrypt = require('bcryptjs');
 const mongodb = require('mongodb');
-const ObjectId = mongodb.ObjectId; // Add this line
+const ObjectId = mongodb.ObjectId;
+const Product = require('./product-model'); // Add this line
 
 const db = require('../data/database');
 
 class User {
-    constructor(id, email, password, name, address) {
+    constructor(id, email, password, fullname, address = [], favorites = []) {
         this.id = id ? new ObjectId(id) : null;
         this.email = email;
         this.password = password;
-        this.name = name;
+        this.fullname = fullname;
         this.address = address;
+        this.favorites = favorites;
     } 
 
     static async findById(userId) {
@@ -37,13 +39,44 @@ class User {
         await db.getDb().collection('users').insertOne({
             email: this.email,
             password: hashedPassword,
-            fullname: this.fullname
+            fullname: this.fullname,
+            address: this.address,
         });
+    }
+
+    async addAddress(address) {
+        const userId = this.id;
+        await db.getDb().collection('users').updateOne(
+            { _id: userId },
+            { $push: { address: address } }
+        );
+    }
+    async removeAddress(address) {
+        await db.getDb().collection('users').deleteOne(
+            { _id: userDocument._id },
+            { $set: { address: userDocument.address } }
+        );
+    }
+
+    async addFavorite(productId) {
+        await db.getDb().collection('users').updateOne(
+            { _id: this.id },
+            { $addToSet: { favorites: new ObjectId(productId) } }
+        );
+    }
+
+    async removeFavorite(productId) {
+        await db.getDb().collection('users').updateOne(
+            { _id: this.id },
+            { $pull: { favorites: new ObjectId(productId) } }
+        );
     }
 
     hasMatchingPassword(hashedPassword){
         return bcrypt.compare(this.password, hashedPassword);
     }
+
+
 }
 
 module.exports = User;

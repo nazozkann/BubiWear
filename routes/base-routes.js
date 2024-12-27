@@ -12,6 +12,7 @@ router.get('/about', function(req, res) {
     res.render('customer/products/about');
 });
 
+
 router.get('/401', function(req, res) { // Added leading slash
     res.status(401).render('shared/401');
 });

@@ -1,3 +1,6 @@
+const Product = require('./product-model');
+const Design = require('./design-model');
+
 class Cart {
     constructor(items = [], totalQuantity = 0, totalPrice = 0) {
         this.items = items;
@@ -5,30 +8,40 @@ class Cart {
         this.totalPrice = totalPrice;
     }
 
-    addItem(product) {
-        const cartItemIndex = this.items.findIndex(item => item.product.id === product.id);
-
+    addItem(item) {
+        const isProduct = item instanceof Product;
+        const isDesign = item instanceof Design;
+    
+        const cartItemIndex = this.items.findIndex(cartItem =>
+            (cartItem.product && cartItem.product.id === item.id) ||
+            (cartItem.design && cartItem.design.id === item.id)
+        );
+    
         if (cartItemIndex >= 0) {
             const existingCartItem = this.items[cartItemIndex];
             existingCartItem.quantity++;
-            existingCartItem.totalPrice += product.price;
+            existingCartItem.totalPrice += item.price;
             this.items[cartItemIndex] = existingCartItem;
         } else {
             const newCartItem = {
-                product: product,
+                product: isProduct ? { id: item.id, title: item.title, price: item.price } : null,
+                design: isDesign ? { id: item.id, title: item.title, price: item.price } : null,
                 quantity: 1,
-                totalPrice: product.price,
+                totalPrice: item.price,
             };
             this.items.push(newCartItem);
         }
-
+    
         this.totalQuantity++;
-        this.totalPrice += product.price;
-        return;
+        this.totalPrice += item.price;
     }
 
-    removeItem(productId) {
-        const cartItemIndex = this.items.findIndex(item => item.product.id === productId);
+    removeItem(itemId) {
+        const cartItemIndex = this.items.findIndex(cartItem => 
+            (cartItem.product && cartItem.product.id === itemId) || 
+            (cartItem.design && cartItem.design.id === itemId)
+        );
+
         if (cartItemIndex < 0) {
             return null;
         }
@@ -37,9 +50,9 @@ class Cart {
     
         if (cartItem.quantity > 1) {
             cartItem.quantity--;
-            cartItem.totalPrice -= cartItem.product.price;
+            cartItem.totalPrice -= cartItem.product ? cartItem.product.price : cartItem.design.price;
             this.totalQuantity--;
-            this.totalPrice -= cartItem.product.price;
+            this.totalPrice -= cartItem.product ? cartItem.product.price : cartItem.design.price;
             return cartItem;
         } else {
             this.totalQuantity -= cartItem.quantity;

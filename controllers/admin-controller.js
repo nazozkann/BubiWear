@@ -87,7 +87,7 @@ async function updateProduct(req, res, next) {
 async function getOrders(req, res, next) {
   try {
     const orders = await Order.findAll();
-    res.render('admin/orders/admin-orders', {
+    res.render('admin/orders/all-orders', {
       orders: orders,
       isAdmin: true
     });

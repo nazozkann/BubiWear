@@ -1,33 +1,38 @@
 <article class="order-item">
   <header class="order-summary">
-    <h2><span class="order-item-price">$<%= order.productData.totalPrice.toFixed(2) %></span> - <%= order.formattedDate %></h2>
+    <h2><span class="order-item-price">₺<%= order.productData.totalPrice.toFixed(2) %></span> - <%= order.formattedDate %></h2>
     <p><span class="badge"><%= order.status.toUpperCase() %></span></p>
   </header>
 
   <section class="order-details">
     <% if (locals.isAdmin) { %>
       <address>
-        <p><a href="mailto:<%= order.userData.email %>"><%= order.userData.name %></a></p>
+        <h3>Customer-Info</h3>
+        <p>E-mail:<%= order.userData.email %></p>
+        <p>Name:<%= order.userData.fullname %></p>
       </address>
     <% } %>
     <ul>
+      <h3>Product-Info</h3>
       <% for (const item of order.productData.items) { %>
-        <li><%= item.product.title %> - $<%= item.totalPrice.toFixed(2) %> ($<%= item.product.price.toFixed(2) %> x <%= item.quantity %>)</li>
+        <li class="product-info-li"><%= item.product ? item.product.title : (item.design ? item.design.title : 'Unknown Item') %> - $<%= item.totalPrice.toFixed(2) %> ($<%= item.product ? item.product.price.toFixed(2) : (item.design ? item.design.price.toFixed(2) : 0) %> x <%= item.quantity %>)</li>
       <% } %>
     </ul>
   </section>
 
   <% if (locals.isAdmin) { %>
     <section class="order-actions">
+      <h3>Order-Status</h3>
       <form>
         <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>">
         <input type="hidden" name="orderid" value="<%= order.id %>">
         <select name="status">
-          <option value="pending" <% if (order.status === 'pending') { %>selected<% } %>>Pending</option>
-          <option value="fulfilled" <% if (order.status === 'fulfilled') { %>selected<% } %>>Fulfilled</option>
-          <option value="cancelled" <% if (order.status === 'cancelled') { %>selected<% } %>>Cancelled</option>
+          <option value="hazırlanıyor" <% if (order.status === 'hazırlanıyor') { %>selected<% } %>>hazırlanıyor</option>
+          <option value="gönderildi" <% if (order.status === 'gönderildi') { %>selected<% } %>>gönderildi</option>
+          <option value="iptal/iade" <% if (order.status === 'iptal/iade') { %>selected<% } %>>iptal/iade</option>
         </select>
         <button class="btn btn-alt">Update</button>
+        <hr>
       </form>
     </section>
   <% } %>

@@ -49,7 +49,11 @@
                     </div>
                 </div>
             </div>
-            <button id="one-time-btn" class="btn btn-dark" data-product-id="<%= product.id %>" data-csrf="<%= locals.csrfToken %>">Add To Chart</button>
+            <form id="add-to-cart-form" action="/cart/items" method="POST">
+                <input type="hidden" name="productId" value="<%= product.id %>">
+                <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>">
+                <button id="one-time-btn" class="button-upload btn btn-dark">Add To Cart</button>
+            </form>
             <div class="shipping-info">
                 <img src="/images/prepare-icon.png" alt="">
                 <p>Prepared by order</p>

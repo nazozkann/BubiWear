@@ -47,6 +47,11 @@ class Product {
         return products.map((productDocument) => new Product(productDocument));
     }
 
+    static async findByIds(productIds) {
+        const products = await db.getDb().collection('products').find({ _id: { $in: productIds.map(id => new ObjectId(id)) } }).toArray();
+        return products.map(productDocument => new Product(productDocument));
+    }
+
     updateImageData() {
         this.imageUrls = [
             this.image1 ? `/products/assets/images/${this.image1}` : null,

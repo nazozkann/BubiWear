@@ -12,12 +12,12 @@
                     <div class="cart-item">
                         <div class="item-info">
                             <div class="item-details">
-                                <h4><%= item.product.title %></h4>
-                                <p><%= item.product.price %>₺</p>
+                                <h4><%= item.product ? item.product.title : (item.design ? item.design.title : 'Unknown Item') %></h4>
+                                <p><%= item.product ? item.product.price : (item.design ? item.design.price : 0) %>₺</p>
                             </div>
                             <div class="item-details-2">
                                 <p>Quantity: <%= item.quantity %></p>
-                                <button class="cancel-btn" data-product-id="<%= item.product.id %>" 
+                                <button class="cancel-btn" data-item-id="<%= item.product ? item.product.id : (item.design ? item.design.id : '') %>" 
                                     data-csrf="<%= csrfToken %>">×</button>
                             </div>
                         </div>
