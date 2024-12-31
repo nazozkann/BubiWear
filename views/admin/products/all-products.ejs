@@ -12,14 +12,5 @@
                 <a href="/admin/products/new" class="btn btn-dark">Add Product</a>
             </p>
         </section>
-        <section>
             <ul class="product-grid">
-                <% for(const product of products) {%>
-                <li>
-                    <%- include('../../shared/includes/product-item', { product: product }) %>
-                </li>
-                <% } %>
-            </ul>
-        </section>
-    </main>
-<%- include('../../shared/includes/footer') %>
+                <% for(const product of products) {%>                <li>                    <%- include('../../shared/includes/product-item', { product: product, user: user }) %>                </li>                <% } %>            </ul>        </section>    </main><%- include('../../shared/includes/footer') %>

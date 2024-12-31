@@ -16,7 +16,7 @@ async function initializeCart(req, res, next) {
     for (const item of cart.items) {
         if (item.design && item.design.id) {
             const design = await Design.findById(item.design.id);
-            item.design = { id: design.id, title: design.title, price: design.price };
+            item.design = { id: design.id, title: design.title, price: design.price, color:design.color, frontImage: design.frontImage, backImage: design.backImage };
         }
     }
 

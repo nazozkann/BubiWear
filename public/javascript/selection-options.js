@@ -34,3 +34,35 @@ document.addEventListener('click', () => {
     categorySelect.classList.remove('open');
   });
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Handle size selection
+    const sizeOptions = document.querySelectorAll('.size-category .category-option');
+    const selectedSizeInput = document.getElementById('selected-size');
+
+    sizeOptions.forEach(option => {
+        option.addEventListener('click', () => {
+            // Remove 'selected' class from all size options
+            sizeOptions.forEach(opt => opt.classList.remove('selected'));
+            // Add 'selected' class to the clicked option
+            option.classList.add('selected');
+            // Update the hidden input with the selected size
+            selectedSizeInput.value = option.getAttribute('data-value');
+        });
+    });
+
+    // Handle color selection
+    const colorOptions = document.querySelectorAll('.color-category .category-option');
+    const selectedColorInput = document.getElementById('selected-color');
+
+    colorOptions.forEach(option => {
+        option.addEventListener('click', () => {
+            // Remove 'selected' class from all color options
+            colorOptions.forEach(opt => opt.classList.remove('selected'));
+            // Add 'selected' class to the clicked option
+            option.classList.add('selected');
+            // Update the hidden input with the selected color
+            selectedColorInput.value = option.getAttribute('data-value');
+        });
+    });
+});

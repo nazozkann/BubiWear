@@ -11,6 +11,13 @@ async function addCart(event) {
 
     const productId = formData.get('productId'); // Get the productId value from the form
     const csrfToken = formData.get('_csrf'); // Get the CSRF token value from the form
+    const size = formData.get('size');
+    const color = formData.get('color');
+
+    if (!size || !color) {
+        alert('Please select both size and color.');
+        return;
+    }
 
     let response;
     try {
@@ -18,6 +25,8 @@ async function addCart(event) {
             method: 'POST',
             body: JSON.stringify({
                 productId: productId,
+                size: size,
+                color: color,
                 _csrf: csrfToken
             }),
             headers: {

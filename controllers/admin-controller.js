@@ -4,7 +4,11 @@ const Order = require('../models/order-model');
 async function getProducts(req, res, next) {
     try {
         const products = await Product.findAll();
-        res.render('admin/products/all-products', { products: products });
+        const user = res.locals.user; // Ensure user is available
+        res.render('admin/products/all-products', {
+            products: products,
+            user: user // Pass user to the template
+        });
     } catch (error) {
         next(error);
         return;

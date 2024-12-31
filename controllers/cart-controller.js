@@ -8,6 +8,8 @@ function getCart(req, res) {
 
 async function addCartItem(req, res, next) {
     const productId = req.body.productId;
+    const size = req.body.size;
+    const color = req.body.color;
     const designId = req.body.designId;
 
     let item;
@@ -24,6 +26,9 @@ async function addCartItem(req, res, next) {
         if (!item) {
             return res.status(404).json({ message: 'Product or Design not found.' });
         }
+
+        item.size = size;
+        item.color = color;
     } catch (error) {
         next(error);
         return;

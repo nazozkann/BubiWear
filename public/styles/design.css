@@ -5,7 +5,9 @@ body, html {
     display: inline-block;
     height: 100vh;
     overflow: hidden;
+    padding-top: 4rem;
 }
+
 .select-color {
     position: absolute;
     display: flex;
@@ -98,7 +100,7 @@ body, html {
 #add-to-chart-design {
     width: 8rem;
     height: 2rem;
-    margin-right: 0;
+    right: 0;
     border: none;
     background-color: var(--color-text-btn-dark);
     border-radius: 0.25rem;
@@ -120,6 +122,7 @@ body, html {
 .design-border {
     width: 18rem;
     height: 29rem;
+    aspect-ratio: 18 / 27;
     border: dashed 0.25rem var(--color-ts-1);
     border-radius: 2rem;
     margin-bottom: -40rem;
@@ -233,4 +236,143 @@ body, html {
 }
 #image-upload-back {
     display: none;
+}
+.go-to-wider-screen {
+    display: none;
+    width: 100vw;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+    gap: 1rem;
+}
+#s-i-t-1 {
+    text-transform: uppercase;
+    font-size: 1rem;
+    font-weight: 500;
+}
+#go-home {
+    background-color: var(--color-text-btn-dark);
+    color: var(--color-text-btn-ligth);
+    border-radius: 0.25rem;
+    padding: 0.4rem 0.6rem;
+}
+.screen-animation {
+    border: solid 0.25rem var(--color-primary-orange);
+    border-radius: 0.5rem;
+    width: 4rem;
+    height: 8rem;
+    animation: scale-animation 3.5s infinite;
+}
+.camera-area {
+    background-color: var(--color-primary-orange);
+    width: 1.75rem;
+    height: 0.5rem;
+    border-radius: 0.25rem;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0.125rem;
+}
+.animation-screen-response {
+    margin-top: 3rem;
+    font-size: 1.25rem;
+    position: relative;
+}
+
+.animation-screen-response::before {
+    content: 'X';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 1;
+    animation: hide-x 3.5s steps(1, end) infinite;
+    z-index: 2; /* Ensure 'X' is above '✓' */
+}
+
+.animation-screen-response::after {
+    content: '✓';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    animation: show-check 3.5s steps(1, end) infinite;
+    z-index: 1; /* Ensure '✓' is below 'X' */
+}
+
+@keyframes scale-animation {
+    0% {
+      width: 4rem;
+      height: 8rem;
+    }
+    15% {
+        width: 4rem;
+        height: 8rem;
+    }
+    35% {
+        width: 16rem;
+        height: 10rem;
+    }
+    65% {
+        width: 16rem;
+        height: 10rem;
+    }
+    85% {
+        width: 4rem;
+        height: 8rem;
+    }
+    100% {
+        width: 4rem;
+        height: 8rem;
+    }
+}
+
+@keyframes toggle-symbols {
+    0%, 15% {
+        opacity: 1;
+    }
+    35%, 65% {
+        opacity: 0;
+    }
+    85%, 100% {
+        opacity: 1;
+    }
+}
+
+@keyframes show-check {
+    0%, 15% {
+        opacity: 0;
+    }
+    35%, 65% {
+        opacity: 1;
+    }
+    85%, 100% {
+        opacity: 0;
+    }
+}
+
+@keyframes hide-x {
+    0%, 15% {
+        opacity: 1;
+    }
+    35%, 65% {
+        opacity: 0;
+    }
+    85%, 100% {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 64rem) {
+    #design-form {
+        display: none;
+    }
+    .go-to-wider-screen {
+        display: flex;
+        margin-top: -4rem;
+    }
 }

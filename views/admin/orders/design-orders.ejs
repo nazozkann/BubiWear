@@ -1,0 +1,25 @@
+<%- include('../../shared/includes/head', { pageTitle: 'Admin Orders' }) %>
+<link rel="stylesheet" href="/styles/orders.css">
+<script src="/scripts/order-management.js" defer></script>
+</head>
+<body>
+  <%- include('../../shared/includes/header') %>
+  <main>
+    <div class="designed-order-layout">
+        <h1><%= design.title %></h1>
+        <p>Color: <%= design.color %></p>
+        <% if (design.frontImage) { %>
+            <div class="design-image">
+                <h2>Front Image</h2>
+                <img class="design-image-container" src="/products/assets/uploads/<%= design.frontImage %>" alt="Front Image">
+            </div>
+        <% } %>
+
+        <% if (design.backImage) { %>
+            <div class="design-image">
+                <h2>Back Image</h2>
+                <img class="design-image-container" src="/products/assets/uploads/<%= design.backImage %>" alt="Back Design">
+            </div>
+        <% } %>
+  </main>
+</body>

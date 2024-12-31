@@ -12,6 +12,7 @@ main {
     width: 100%;
     height: auto; /* Change to auto to allow scrolling */
     position: relative;
+    margin-top: 6.5rem;
 }
 
 /* Başlık Bölümü */
@@ -100,4 +101,12 @@ main {
     100% {
         opacity: 0;
     }
+}
+
+/* Sticky class for mobile menu */
+.sticky {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
 }

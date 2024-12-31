@@ -13,12 +13,23 @@ async function getOrders(req, res,next) {
 }
 
 async function addOrder(req,res, next) {
-    const cart = res.locals.cart;
+    const cart = req.session.cart; // Changed from res.locals.cart to req.session.cart
+
+    // Add logging to debug cart items
+    console.log('Adding Order with Cart Items:', cart.items);
+
+    // Ensure all design items include the color property
+    for (const item of cart.items) {
+        if (item.design && !item.design.color) {
+            console.log('Design item missing color:', item); // Added logging for missing color
+            return next(new Error('Design item is missing the color property.'));
+        }
+    }
 
     let userDocument;
     try {
         userDocument = await User.findById(res.locals.uid);
-    } catch (error) {
+    } catch (error) { // Ensure error is defined
         return next(error);
     }
 
@@ -30,7 +41,7 @@ async function addOrder(req,res, next) {
 
     try{
         await order.save();
-    } catch {
+    } catch (error) { // Define error parameter
         next(error);
         return;
     }

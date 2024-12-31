@@ -1,4 +1,5 @@
 <%- include('../../shared/includes/head', { pageTitle: 'Design' }) %>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="/styles/design.css">
 <link rel="stylesheet" href="/styles/base.css">
 <script src="/javascript/design.js" defer></script>
@@ -63,5 +64,26 @@
                 <button class="button-upload" id="add-to-chart-design" type="submit">Add To Chart</button>
             </div>
         </form>
+        <div class="go-to-wider-screen">
+            <div class="screen-animation">
+                <div class="camera-area"></div>
+                <p class="animation-screen-response"></p>
+            </div>
+            <div class="screen-info-text">
+                <p id="s-i-t-1">Our design builder is made for larger screens.</p>
+                <p id="s-i-t-2"> Please use a wider screen to access this feature.</p>
+            </div>
+            <a id="go-home" href="/">Home</a>
+        </div>
     </main>
 <%- include('../../shared/includes/footer') %>
+<script>
+// Ensure that one of the color options is selected before submitting the form
+document.getElementById('design-form').addEventListener('submit', function(event) {
+    const selectedColor = document.querySelector('input[name="color"]:checked');
+    if (!selectedColor) {
+        event.preventDefault();
+        alert('Please select a color.');
+    }
+});
+</script>

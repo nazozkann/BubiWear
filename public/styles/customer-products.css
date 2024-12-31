@@ -3,12 +3,14 @@
     flex-direction: column;
     margin-left: 2rem;
     margin-right: 2rem;
-    margin-top: 1.5rem;
+    margin-top: 6rem;
 }
 .category-subheader {
     display: flex;
     flex-direction: row;
     gap: 1.5rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
 }
 .category-subheader a{
     font-weight: 400;
@@ -20,6 +22,7 @@
 }
 .product-details-layout {
     display: flex;
+    flex-direction: row;
     margin-left: 2rem;
     margin-right: 2rem;
     gap: 4rem;
@@ -122,4 +125,25 @@
 }
 #underlined {
     text-decoration: underline;
+}
+
+/* Make .product-page-layout sticky on mobile */
+@media (max-width: 64rem) {
+    .category-subheader {
+        position: sticky;
+        top: 4rem; /* Adjust this value to match the height of the nav-bar */
+        background-color: var(--color-bg);
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+    .product-details-layout {
+        flex-direction: column;
+        gap: 2rem;
+    }
+    .product-details-images {
+        width: 100%;
+    }
+    .product-details-add-to {
+        width: 100%;
+    }
 }

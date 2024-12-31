@@ -38,7 +38,13 @@ router.post('/checkout', function(req, res) {
     res.redirect('/cart/checkout');
 });
 
-router.post('/items', cartController.addCartItem);
+router.post('/items', function(req, res, next) {
+    const { productId, size, color } = req.body;
+    if (!size || !color) {
+        return res.status(400).json({ message: 'Size and color are required.' });
+    }
+    cartController.addCartItem(req, res, next);
+});
 
 router.delete('/items/:itemId', cartController.removeCartItem); // Changed parameter name
 

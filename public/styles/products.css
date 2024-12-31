@@ -7,6 +7,7 @@ main{
     display: grid;
     grid-template-columns: repeat(3,1fr);
     gap: 10rem;
+    margin-bottom: 4rem;
 }
 .product-item {
     padding: 0;

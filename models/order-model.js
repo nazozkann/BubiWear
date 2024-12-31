@@ -76,6 +76,19 @@ class Order {
                 .collection('orders')
                 .updateOne({ _id: orderId }, { $set: { status: this.status } });
         } else {
+            // Removed design color validation to prevent duplicate checks
+            /*
+            // Validate design items
+            this.productData.items.forEach(item => {
+                if (item.design) {
+                    if (!item.design.color) {
+                        throw new Error('Design item is missing the color property.');
+                    }
+                    // Add other necessary validations if needed
+                }
+            });
+            */
+
             const orderDocument = {
                 userData: this.userData,
                 productData: this.productData,

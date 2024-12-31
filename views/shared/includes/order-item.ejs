@@ -15,7 +15,20 @@
     <ul>
       <h3>Product-Info</h3>
       <% for (const item of order.productData.items) { %>
-        <li class="product-info-li"><%= item.product ? item.product.title : (item.design ? item.design.title : 'Unknown Item') %> - $<%= item.totalPrice.toFixed(2) %> ($<%= item.product ? item.product.price.toFixed(2) : (item.design ? item.design.price.toFixed(2) : 0) %> x <%= item.quantity %>)</li>
+        <li class="product-info-li">
+          <% if (item.product) { %>
+            <a href="/products/<%= item.product.id %>"><%= item.product.title %></a>
+          <% } else if (item.design) { %>
+            <a href="/design/items/<%= item.design.id %>"><%= item.design.title %></a>
+          <% } else { %>
+            Unknown Item
+          <% } %> - $<%= item.totalPrice.toFixed(2) %> ($<%= item.product ? item.product.price.toFixed(2) : (item.design ? item.design.price.toFixed(2) : 0) %> x <%= item.quantity %>) 
+          <% if (locals.isAdmin && item.product) { %>
+            - Size: <%= item.size %>, Color: <%= item.product.color %>
+          <% } else if (locals.isAdmin &&  item.design) {%>
+            Color: <%= item.design.color %>
+          <% } %>
+        </li>
       <% } %>
     </ul>
   </section>

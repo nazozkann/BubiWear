@@ -10,6 +10,8 @@ router.get('/design', function(req, res) {
     res.render('customer/products/design', { designId: designId });
 });
 
+router.get('/design/items/:id', designController.getDesignById); // Added route for fetching design by ID
+
 router.post('/design/items',
     designImageUploadMiddleware.fields([
         { name: 'designImageFront', maxCount: 1 },

@@ -5,7 +5,10 @@
 .lower-side {
     background-color: var(--color-form-bg);
     width: 100%;
-    height: 80vh;
+    height: auto;
+    min-height: 100vh;
+    padding-bottom: 4rem;
+    padding-top: 8rem;
 }
 .category-subheader {
     display: flex;
@@ -13,7 +16,8 @@
     gap: 1.5rem;
     margin-left: 2rem;
     margin-right: 2rem;
-    padding-top: 1rem;
+    padding-top: 1.5rem;
+    padding-bottom: 1rem;
 }
 .category-subheader a{
     font-weight: 400;
@@ -179,4 +183,19 @@ input[type="radio"] {
 .pc-down-fav img{
     width: 1rem;
     height: auto;
+}
+
+@media (max-width: 64rem) {
+    .address-grid {
+        grid-template-columns: 1fr;
+    }
+    .product-item {
+        grid-template-columns: 1fr;
+    }
+    .category-subheader {
+        position: sticky;
+        top: 4rem;
+        background-color: var(--color-form-bg);
+        z-index: 10;
+    }
 }

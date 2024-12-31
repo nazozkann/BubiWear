@@ -9,12 +9,16 @@ class Cart {
     }
 
     addItem(item) {
+        if (!item.size || !item.color) {
+            throw new Error('Item must have size and color attributes');
+        }
+
         const isProduct = item instanceof Product;
         const isDesign = item instanceof Design;
     
         const cartItemIndex = this.items.findIndex(cartItem =>
-            (cartItem.product && cartItem.product.id === item.id) ||
-            (cartItem.design && cartItem.design.id === item.id)
+            (cartItem.product && cartItem.product.id === item.id && cartItem.size === item.size && cartItem.color === item.color) ||
+            (cartItem.design && cartItem.design.id === item.id && cartItem.size === item.size && cartItem.color === item.color)
         );
     
         if (cartItemIndex >= 0) {
@@ -28,6 +32,8 @@ class Cart {
                 design: isDesign ? { id: item.id, title: item.title, price: item.price } : null,
                 quantity: 1,
                 totalPrice: item.price,
+                size: item.size,
+                color: item.color,
             };
             this.items.push(newCartItem);
         }
@@ -36,10 +42,10 @@ class Cart {
         this.totalPrice += item.price;
     }
 
-    removeItem(itemId) {
+    removeItem(itemId, size, color) {
         const cartItemIndex = this.items.findIndex(cartItem => 
-            (cartItem.product && cartItem.product.id === itemId) || 
-            (cartItem.design && cartItem.design.id === itemId)
+            (cartItem.product && cartItem.product.id === itemId && cartItem.size === size && cartItem.color === color) || 
+            (cartItem.design && cartItem.design.id === itemId && cartItem.size === size && cartItem.color === color)
         );
 
         if (cartItemIndex < 0) {

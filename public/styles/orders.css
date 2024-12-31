@@ -34,3 +34,14 @@ select {
 hr {
     margin-top: 2rem;
 }
+.designed-order-layout {
+    display: flex;
+    flex-direction: column;
+    margin-top: 8rem;
+    margin-left: 2rem;
+    margin-right: 2rem;
+}
+.design-image-container {
+    width: 100%;
+    height: auto;
+}

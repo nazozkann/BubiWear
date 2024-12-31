@@ -4,7 +4,7 @@
             <a href="/"><img src="/images/bubi-logo.png" alt="bubi-logo"></a>
             <ul>
                 <li id="shop-sub-menu">
-                    <div class="shop-main">
+                    <div class="shop-main" style="cursor: pointer;">
                         <h3>Shop</h3>
                         <div class="icon-hover">
                             <img class="default-img" src="/images/list-vector-ligth.png" alt="">
@@ -79,8 +79,7 @@
             </ul>
         </div>
     </nav>
-    <script src="/javascript/nav-submenu.js"></script>
-    <script src="/javascript/nav-submenu.js"></script>
+    <script src="/javascript/nav-submenu.js" defer></script>
 </header>
 <aside>
     <nav id="mobile-menu" class="sticky">
@@ -101,16 +100,6 @@
                             </div>
                         </a>
                     </li>
-                    <% if(locals.isAuth && !locals.isAdmin) {%>
-                    <li>
-                        <a href="/profile/favorites" class="icon-hover">
-                            <div class="icon-hover">
-                                <img class="default-img" src="/images/profile-icon-ligth.png" alt="">
-                                <img class="hover-img" src="/images/profile-icon-dark.png" alt="">
-                            </div>
-                        </a>
-                    </li>
-                    <% } %>
                 <% } %>
                     <li>
                         <button id="mobile-menu-btn">
@@ -124,12 +113,14 @@
     </nav>
     <div id="mobile-side-menu">
         <ul id="left-categories">
-            <ul>
-                <li><a href="/t-shirts">T-shirts</a></li>
-                <li><a href="/sweatshirts">Sweatshirts</a></li>
-                <li><a href="/pants">Pants</a></li>
-                <li><a href="/bags">Bags</a></li>
-            </ul>
+            <li class="mobile-shop">
+                <a href="javascript:void(0);" class="shop-toggle">Shop</a>
+                <ul class="mobile-submenu">
+                    <li><a href="/t-shirts">T-shirts</a></li>
+                    <li><a href="/sweatshirts">Sweatshirts</a></li>
+                    <li><a href="/pants">Pants</a></li>
+                    <li><a href="/bags">Bags</a></li>
+                </ul>
             </li>
             <% if(!locals.isAdmin) {%>
             <li>
@@ -141,26 +132,29 @@
             <% } %>
             <% if (locals.isAdmin) {%>
                 <li class="unstable-buttons">
-                    <a href="/admin/products">Manage Products</a>
+                    <a href="/admin/products"><h3>Manage Products</h3></a>
                 </li>
                 <li class="unstable-buttons">
-                    <a href="/admin/orders">Manage Orders</a>
+                    <a href="/admin/orders"><h3>Manage Orders</h3></a>
                 </li>
             <%}  %>
             <% if(!locals.isAuth) {%>
                 <li class="unstable-buttons">
-                    <a href="/signin">
-                        Sign In
-                    </a>
+                    <a href="/signin"><h3>Sign In</h3></a>
                 </li>
             <% } %>
             <% if(locals.isAuth) {%>
-                <li>
-                    <form id="mobile-logout-form" action="/logout" method="POST">
-                        <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>">
-                        <button class="mobile-logout">Logout</button>
-                    </form>
-                </li>
+                <% if(!locals.isAdmin) {%>
+                    <li class="unstable-buttons">
+                        <a href="/profile/favorites"><h3>Profile</h3></a>
+                    </li>
+                <% } %>
+                    <li>
+                        <form id="mobile-logout-form" action="/logout" method="POST">
+                            <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>">
+                            <button class="mobile-logout">Logout</button>
+                        </form>
+                    </li>
             <% } %>
         </ul>
     </div>

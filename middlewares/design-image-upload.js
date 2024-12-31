@@ -10,7 +10,7 @@ const MIME_TYPE_MAP = {
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'product-data/uploads/'); // Dosyaların kaydedileceği klasör
+        cb(null, 'product-data/uploads'); // Dosyaların kaydedileceği klasör
     },
     filename: (req, file, cb) => {
         const ext = MIME_TYPE_MAP[file.mimetype];
@@ -18,10 +18,14 @@ const storage = multer.diskStorage({
     }
 });
 
+const allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']; // Added 'image/webp'
+
 const fileFilter = (req, file, cb) => {
-    const isValid = !!MIME_TYPE_MAP[file.mimetype];
-    let error = isValid ? null : new Error('Invalid mime type!');
-    cb(error, isValid);
+    if (allowedMimes.includes(file.mimetype)) {
+        cb(null, true);
+    } else {
+        cb(new Error('Invalid mime type!'), false);
+    }
 };
 
 module.exports = multer({
