@@ -12,43 +12,62 @@ async function getOrders(req, res,next) {
     }
 }
 
-async function addOrder(req,res, next) {
+async function addOrder(req, res, next) {
     const cart = req.session.cart; // Changed from res.locals.cart to req.session.cart
 
+    if (!cart || cart.items.length === 0) {
+        return res.status(400).json({ message: 'Your cart is empty.' });
+    }
+
+    const selectedAddress = req.session.selectedAddress;
+    if (!selectedAddress) {
+        return res.status(400).json({ message: 'No address selected.' });
+    }
+
     // Add logging to debug cart items
-    console.log('Adding Order with Cart Items:', cart.items);
+    console.log('Placing Order with Cart Items:', cart.items);
 
     // Ensure all design items include the color property
     for (const item of cart.items) {
         if (item.design && !item.design.color) {
             console.log('Design item missing color:', item); // Added logging for missing color
-            return next(new Error('Design item is missing the color property.'));
+            return res.status(400).json({ message: 'Design item is missing the color property.' });
         }
     }
 
     let userDocument;
     try {
-        userDocument = await User.findById(res.locals.uid);
+        const userId = req.session.user.id; // Changed from res.locals.uid to req.session.user.id
+        userDocument = await User.findById(userId);
+        if (!userDocument) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
     } catch (error) { // Ensure error is defined
-        return next(error);
+        console.error('Error fetching user:', error);
+        return res.status(500).json({ message: 'Internal server error.' });
     }
 
     const order = new Order(cart, {
         _id: userDocument._id,
         email: userDocument.email,
         fullname: userDocument.fullname,
+        address: selectedAddress
     });
 
     try{
         await order.save();
+        console.log('Order saved successfully:', order);
     } catch (error) { // Define error parameter
-        next(error);
-        return;
+        console.error('Error saving order:', error);
+        return res.status(500).json({ message: 'Failed to save order.' });
     }
 
     req.session.cart = null;
 
-    res.redirect('/cart/checkout');
+    res.json({ 
+        success: true, 
+        redirectUrl: '/cart/confirmation' // Provide URL for client-side redirection
+    });
 }
 
 async function updateOrderStatus(req, res, next) {

@@ -8,33 +8,30 @@
         <div class="cart-area" id="cart-area">
             <div class="addresses">
                 <p>Choose an address or add</p>
-                <ul class="address-grid">
-                    <% for (const address of addresses) { %>
-                        <% if (address) { %> 
-                            <div class="address-item">
-                                <input 
-                                    type="radio" 
-                                    id="address-<%= address.id %>" 
-                                    name="address" 
-                                    value="<%= address.id %>" 
-                                    form="checkout-form" 
-                                    required
-                                >
-                                <label class="address-label" for="address-<%= address.id %>">
-                                    <%- include('./address-item', { address: address, fromProfile: false }) %>
-                                </label>
-                            </div>
-                        <% }  %>
-                    <% } %>
-                    <li>
-                        <a href="/cart/add-address" class="add-address-btn">Add Address</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="pay-btn">
-                <form action="/orders" method="POST" id="checkout-form">
+                <form id="checkout-form" action="/cart/payment-info" method="POST">
                     <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>">
-                    <button class="btn btn-dark to-payment-btn">Proceed to Payment</button>
+                    <ul class="address-grid">
+                        <% for (const address of addresses) { %>
+                            <% if (address) { %> 
+                                <div class="address-item">
+                                    <input 
+                                        type="radio" 
+                                        id="address-<%= address.id %>" 
+                                        name="selectedAddress" 
+                                        value="<%= address.id %>" 
+                                        required
+                                    >
+                                    <label class="address-label" for="address-<%= address.id %>">
+                                        <%- include('./address-item', { address: address, fromProfile: false }) %>
+                                    </label>
+                                </div>
+                            <% }  %>
+                        <% } %>
+                        <li>
+                            <a href="/cart/add-address" class="add-address-btn">Add Address</a>
+                        </li>
+                    </ul>
+                    <button type="submit" class="btn btn-dark to-payment-btn">Proceed to Payment</button>
                 </form>
             </div>
         </div>

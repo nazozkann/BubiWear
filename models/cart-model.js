@@ -42,7 +42,7 @@ class Cart {
         this.totalPrice += item.price;
     }
 
-    removeItem(itemId, size, color) {
+    removeItem(itemId, size, color) { // Updated parameters
         const cartItemIndex = this.items.findIndex(cartItem => 
             (cartItem.product && cartItem.product.id === itemId && cartItem.size === size && cartItem.color === color) || 
             (cartItem.design && cartItem.design.id === itemId && cartItem.size === size && cartItem.color === color)
@@ -59,6 +59,7 @@ class Cart {
             cartItem.totalPrice -= cartItem.product ? cartItem.product.price : cartItem.design.price;
             this.totalQuantity--;
             this.totalPrice -= cartItem.product ? cartItem.product.price : cartItem.design.price;
+            this.items[cartItemIndex] = cartItem;
             return cartItem;
         } else {
             this.totalQuantity -= cartItem.quantity;

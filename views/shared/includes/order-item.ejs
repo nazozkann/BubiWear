@@ -8,8 +8,19 @@
     <% if (locals.isAdmin) { %>
       <address>
         <h3>Customer-Info</h3>
-        <p>E-mail:<%= order.userData.email %></p>
-        <p>Name:<%= order.userData.fullname %></p>
+        <p>E-mail: <%= order.userData.email %></p>
+        <p>Name: <%= order.userData.fullname %></p>
+        <% if (order.address) { %> <!-- Added conditional check -->
+          <p>Address:</p>
+          <p>
+            <%= order.address.fullName %><br>
+            <%= order.address.phoneNumber %><br>
+            <%= order.address.street %>, Apt <%= order.address.apartment %><br>
+            <%= order.address.district %>, <%= order.address.city %>, <%= order.address.postCode %>
+          </p>
+        <% } else { %> <!-- Fallback content -->
+          <p>No address information available.</p>
+        <% } %>
       </address>
     <% } %>
     <ul>
@@ -22,7 +33,7 @@
             <a href="/design/items/<%= item.design.id %>"><%= item.design.title %></a>
           <% } else { %>
             Unknown Item
-          <% } %> - $<%= item.totalPrice.toFixed(2) %> ($<%= item.product ? item.product.price.toFixed(2) : (item.design ? item.design.price.toFixed(2) : 0) %> x <%= item.quantity %>) 
+          <% } %> - ₺<%= item.totalPrice.toFixed(2) %> (₺<%= item.product ? item.product.price.toFixed(2) : (item.design ? item.design.price.toFixed(2) : 0) %> x <%= item.quantity %>) 
           <% if (locals.isAdmin && item.product) { %>
             - Size: <%= item.size %>, Color: <%= item.product.color %>
           <% } else if (locals.isAdmin &&  item.design) {%>

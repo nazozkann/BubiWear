@@ -17,6 +17,7 @@ class Order {
             });
         }
         this.id = orderId;
+        this.address = userData.address; // New property
     }
 
     static transformOrderDocument(orderDoc) {
@@ -94,6 +95,7 @@ class Order {
                 productData: this.productData,
                 date: new Date(),
                 status: this.status,
+                address: this.address // Include address
             };
             return db.getDb().collection('orders').insertOne(orderDocument);
         }

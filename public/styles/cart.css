@@ -178,3 +178,35 @@ input[type=number] {
     margin-left: auto;
     text-align: right;
 }
+.payment-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.form-group input {
+    height: 1.5rem;
+    border-radius: 0.25rem;
+    border: 0.5px solid var(--color-text-ligth);
+}
+.btn {
+    all: unset;
+    color: var(--color-text-btn-ligth);
+    background-color: var(--color-text-btn-dark);
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    text-align: center;
+    cursor: pointer;
+}
+.btn:hover {
+    background-color: var(--color-text-btn-dark-hover);
+}
+#confirmation-area {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}

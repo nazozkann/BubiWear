@@ -3,6 +3,7 @@ const express = require('express');
 const cartController = require('../controllers/cart-controller');
 const userController = require('../controllers/user-controller'); // Import userController
 const User = require('../models/user-model'); // Import User model
+const ordersController = require('../controllers/orders-controller'); // Import ordersController
 
 const router = express.Router();
 
@@ -38,6 +39,17 @@ router.post('/checkout', function(req, res) {
     res.redirect('/cart/checkout');
 });
 
+// Route to display payment information page
+router.get('/payment-info', function(req, res) {
+    res.render('customer/cart/payment-info', {
+        csrfToken: req.csrfToken()
+    });
+});
+
+// Route to handle placing the order
+router.post('/place-order', ordersController.addOrder);
+
+// Route to handle adding an item to the cart
 router.post('/items', function(req, res, next) {
     const { productId, size, color } = req.body;
     if (!size || !color) {
@@ -46,6 +58,18 @@ router.post('/items', function(req, res, next) {
     cartController.addCartItem(req, res, next);
 });
 
-router.delete('/items/:itemId', cartController.removeCartItem); // Changed parameter name
+// Route to handle removing an item from the cart with size and color
+router.delete('/items/:itemId', function(req, res, next) {
+    // Ensure the request has a JSON body
+    if (!req.body.size || !req.body.color) {
+        return res.status(400).json({ message: 'Size and color are required to remove an item.' });
+    }
+    cartController.removeCartItem(req, res, next);
+});
+
+// Route to display order confirmation page
+router.get('/confirmation', cartController.getConfirmation);
+
+router.post('/payment-info', cartController.saveSelectedAddress);
 
 module.exports = router;

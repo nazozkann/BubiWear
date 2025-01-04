@@ -17,7 +17,10 @@
                             </div>
                             <div class="item-details-2">
                                 <p>Quantity: <%= item.quantity %></p>
-                                <button class="cancel-btn" data-item-id="<%= item.product ? item.product.id : (item.design ? item.design.id : '') %>" 
+                                <button class="cancel-btn" 
+                                    data-item-id="<%= item.product ? item.product.id : (item.design ? item.design.id : '') %>" 
+                                    data-size="<%= item.size %>" 
+                                    data-color="<%= item.color %>" 
                                     data-csrf="<%= csrfToken %>">×</button>
                             </div>
                         </div>
@@ -31,7 +34,7 @@
                     </div>
                 </div>
                 <div class="pay-btn">
-                    <form action="/orders" method="POST">
+                    <form action="/cart/checkout" method="GET"> <!-- Changed action from /orders to /cart/checkout and method to GET -->
                         <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>">
                         <button class="btn btn-dark">Proceed to Checkout</button>
                     </form>
