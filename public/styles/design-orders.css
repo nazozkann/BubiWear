@@ -1,10 +1,10 @@
-body, html {
-    overflow: hidden;
+html {
+    overflow-x: hidden;
+    overflow-y: scroll;
 }
-.design-page-layout {
+.design-order-layout {
     display: inline-block;
     height: 100vh;
-    overflow: hidden;
     padding-top: 4rem;
 }
 
@@ -377,6 +377,43 @@ body, html {
     }
 }
 
-.design-template .front-template {
-    width: 20px;
+
+
+.designed-order-layout {
+    display: flex;
+    flex-direction: column;
+    margin-top: 8rem;
+    margin-left: 2rem;
+    margin-right: 2rem;
+}
+
+.design-border {
+    position: relative; 
+    width: 18rem; 
+    height: 29rem; 
+    margin-bottom: 3rem; 
+    border: dashed 0.25rem #000; 
+    border-radius: 2rem;
+    z-index: 100;
+}
+.front-image-preview, .back-image-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4rem;
+}
+.front-template {
+    display: absolute;
+    width: 700px;
+    margin-top: -670px;
+}
+.back-template {
+    display: absolute;
+    width: 700px;
+    margin-top: -670px;
+}
+.big-images img {
+    width: 100%;
+    height: auto;
 }

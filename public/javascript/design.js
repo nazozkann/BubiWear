@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const addToChartButton = document.getElementById('add-to-chart-design');
 
     addToChartButton.addEventListener('click', function (event) {
-        event.preventDefault(); // Varsayılan submit davranışını engelle
+        event.preventDefault(); 
         console.log('Button clicked. Sending form data.');
 
         const selectedColor = document.querySelector('input[name="color"]:checked');
@@ -28,7 +28,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!selectedColor || (!frontImage && !backImage)) {
             alert('Please select a color and upload at least one image.');
         } else {
-            // Formu manuel olarak gönder
             designForm.submit();
         }
     });
@@ -81,6 +80,8 @@ document.addEventListener('DOMContentLoaded', function () {
                             uploadInfo.style.display = 'block';
                         }
                         updatePrice();
+                        // Temizlerken hidden input’ları da resetliyoruz
+                        resetCoordinates(side);
                     });
         
                     img.onload = function () {
@@ -88,19 +89,20 @@ document.addEventListener('DOMContentLoaded', function () {
                             console.warn('Image has no dimensions, forcing reflow...');
                             forceRepaint(img);
                         }
-        
+
+                        // Varsayılan ilk değerlere set et (left=0, top=0, width=yarısı)
+                        setCoordinates(side, 0, 0, img.offsetWidth, img.offsetHeight);
+
                         updateResizeHandlePosition(img, resizeHandle);
                         updateCloseButtonPosition(img, closeButton);
-                        addDragFunctionality(img, resizeHandle, closeButton, designBorder);
-                        addResizeFunctionality(img, resizeHandle, closeButton, designBorder);
-        
-                        // Yalnızca "Upload Your Image Here" yazısını gizle
+                        addDragFunctionality(img, resizeHandle, closeButton, designBorder, side);
+                        addResizeFunctionality(img, resizeHandle, closeButton, designBorder, side);
+
                         const uploadText = uploadInfo.querySelector('.upload-text');
                         if (uploadText) {
                             uploadText.style.display = 'none';
                         }
-        
-                        // Butonların her zaman görünür olduğundan emin ol
+
                         const directionBtn = document.querySelector(`.${side}-btn`);
                         if (directionBtn) {
                             directionBtn.style.display = 'block';
@@ -116,8 +118,35 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    function resetCoordinates(side) {
+        if (side === 'front') {
+            document.getElementById('front-left').value = '';
+            document.getElementById('front-top').value = '';
+            document.getElementById('front-width').value = '';
+            document.getElementById('front-height').value = '';
+        } else {
+            document.getElementById('back-left').value = '';
+            document.getElementById('back-top').value = '';
+            document.getElementById('back-width').value = '';
+            document.getElementById('back-height').value = '';
+        }
+    }
+
+    function setCoordinates(side, left, top, width, height) {
+        if (side === 'front') {
+            document.getElementById('front-left').value = left;
+            document.getElementById('front-top').value = top;
+            document.getElementById('front-width').value = width;
+            document.getElementById('front-height').value = height;
+        } else {
+            document.getElementById('back-left').value = left;
+            document.getElementById('back-top').value = top;
+            document.getElementById('back-width').value = width;
+            document.getElementById('back-height').value = height;
+        }
+    }
+
     function forceRepaint(element) {
-        // Force the browser to recalculate the layout
         const display = element.style.display;
         element.style.display = 'none';
         element.offsetHeight; // Trigger reflow
@@ -134,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function () {
         closeButton.style.left = `${img.offsetLeft}px`;
     }
 
-    function addDragFunctionality(img, resizeHandle, closeButton, designBorder) {
+    function addDragFunctionality(img, resizeHandle, closeButton, designBorder, side) {
         let startX = 0, startY = 0, offsetX = 0, offsetY = 0, isDragging = false;
 
         img.addEventListener('mousedown', function (e) {
@@ -166,6 +195,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
             updateResizeHandlePosition(img, resizeHandle);
             updateCloseButtonPosition(img, closeButton);
+
+            // Hidden input’lara kaydet
+            setCoordinates(side, newLeft, newTop, img.offsetWidth, img.offsetHeight);
         }
 
         function mouseUp() {
@@ -175,8 +207,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function addResizeFunctionality(img, resizeHandle, closeButton, designBorder) {
-        let startX = 0, startWidth = 0, aspectRatio = img.offsetWidth / img.offsetHeight, isResizing = false;
+    function addResizeFunctionality(img, resizeHandle, closeButton, designBorder, side) {
+        let startX = 0, startWidth = 0;
+        const aspectRatio = img.offsetWidth / img.offsetHeight;
+        let isResizing = false;
 
         resizeHandle.addEventListener('mousedown', function (e) {
             e.preventDefault();
@@ -202,8 +236,14 @@ document.addEventListener('DOMContentLoaded', function () {
             ) {
                 img.style.width = `${newWidth}px`;
                 img.style.height = `${newHeight}px`;
+
                 updateResizeHandlePosition(img, resizeHandle);
                 updateCloseButtonPosition(img, closeButton);
+
+                // Hidden input’lara kaydet
+                const leftVal = parseInt(img.style.left, 10);
+                const topVal = parseInt(img.style.top, 10);
+                setCoordinates(side, leftVal, topVal, newWidth, newHeight);
             }
         }
 

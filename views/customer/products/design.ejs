@@ -10,6 +10,19 @@
     <main class="design-page-layout">
         <form id="design-form" action="/design/items?_csrf=<%= locals.csrfToken %>" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="productId" value="<%= locals.productId %>">
+
+            <!-- FRONT IMAGE COORDINATES -->
+            <input type="hidden" id="front-left" name="frontLeft" value="">
+            <input type="hidden" id="front-top" name="frontTop" value="">
+            <input type="hidden" id="front-width" name="frontWidth" value="">
+            <input type="hidden" id="front-height" name="frontHeight" value="">
+
+            <!-- BACK IMAGE COORDINATES -->
+            <input type="hidden" id="back-left" name="backLeft" value="">
+            <input type="hidden" id="back-top" name="backTop" value="">
+            <input type="hidden" id="back-width" name="backWidth" value="">
+            <input type="hidden" id="back-height" name="backHeight" value="">
+
             <div class="select-color">
                 <p>Select Color</p>
                 <div class="colors">

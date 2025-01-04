@@ -1,5 +1,5 @@
 const { ObjectId } = require('mongodb');
-const getDb = require('../data/database').getDb; // getDb fonksiyonunu içe aktar
+const getDb = require('../data/database').getDb;
 
 class Design {
     constructor(designData) {
@@ -9,6 +9,17 @@ class Design {
         this.price = this.calculatePrice();
         this.quantity = 1;
         this.title = 'Your Design';
+
+        // Koordinat verileri
+        this.frontLeft = designData.frontLeft || null;
+        this.frontTop = designData.frontTop || null;
+        this.frontWidth = designData.frontWidth || null;
+        this.frontHeight = designData.frontHeight || null;
+
+        this.backLeft = designData.backLeft || null;
+        this.backTop = designData.backTop || null;
+        this.backWidth = designData.backWidth || null;
+        this.backHeight = designData.backHeight || null;
 
         if (designData._id) {
             this.id = designData._id.toString();
@@ -23,17 +34,27 @@ class Design {
     }
 
     async save() {
-        const db = getDb(); // Ensure the database connection is obtained
+        const db = getDb();
         const designData = {
             color: this.color,
             frontImage: this.frontImage,
             backImage: this.backImage,
             price: this.price,
             quantity: this.quantity,
-            title: this.title
+            title: this.title,
+
+            // Koordinat verileri
+            frontLeft: this.frontLeft,
+            frontTop: this.frontTop,
+            frontWidth: this.frontWidth,
+            frontHeight: this.frontHeight,
+            backLeft: this.backLeft,
+            backTop: this.backTop,
+            backWidth: this.backWidth,
+            backHeight: this.backHeight
         };
         const result = await db.collection('designs').insertOne(designData);
-        this.id = result.insertedId.toString(); // Ensure the ID is correctly set
+        this.id = result.insertedId.toString();
     }
 
     static async findById(designId) {
@@ -49,9 +70,9 @@ class Design {
         }
     
         return new Design({
-            ...design, // Veritabanından gelen tüm bilgileri aktar
+            ...design,
             title: design.title || 'Custom Design',
-            price: design.price || 500 // Varsayılan bir fiyat atanabilir
+            price: design.price || 500
         });
     }
 }
