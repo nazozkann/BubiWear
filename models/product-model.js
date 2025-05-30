@@ -1,102 +1,150 @@
-const { ObjectId } = require('mongodb');
-const mongodb = require('mongodb');
+const { ObjectId } = require("mongodb");
 
-const db = require('../data/database');
+const db = require("../data/database");
 
+/**
+ * 🛠  Product Model – Cloudinary + Local‑file uyumlu
+ * -------------------------------------------------
+ * • Cloudinary üzerinden gelen tam URL'leri **imageUrls[]** dizisinde saklar.
+ * • Eski yapıyla kaydedilmiş image1…image4 alanlarını da hâlâ okuyabilir.
+ * • Yerel dosya ismi (http ile başlamayan) geldiğinde otomatik olarak
+ *   `/products/assets/images/` prefix'i ekler – böylece geriye‑uyumluluk korunur.
+ */
 class Product {
-    constructor(productData) {
-        this.title = productData.title;
-        this.price = +productData.price;
-        this.category = productData.category;
-        this.colors = productData.colors || [];
-        this.sizes = productData.sizes || [];
-        this.image1 = productData.image1 || null;
-        this.image2 = productData.image2 || null;
-        this.image3 = productData.image3 || null;
-        this.image4 = productData.image4 || null;
+  /**
+   * Public helper – bazı controller'lar halen `product.updateImageData()` çağırıyor.
+   * Eski ve yeni alanları senkronize ederek `imageUrls` dizisini günceller.
+   */
+  updateImageData() {
+    // Yeni modelde imageUrls zaten varsa dokunmayız
+    if (this.imageUrls && this.imageUrls.length) return;
+    this._updateImageDataFromLegacyFields();
+  }
+  constructor(productData) {
+    this.title = productData.title;
+    this.price = Number(productData.price);
+    this.category = productData.category;
+    this.colors = productData.colors || [];
+    this.sizes = productData.sizes || [];
 
-        this.updateImageData();
+    // Yeni alan (tercih edilir)
+    this.imageUrls = productData.imageUrls || [];
 
-        if (productData._id) {
-            this.id = productData._id.toString();
-        }
+    // Eski alanlarla geriye‑uyumluluk
+    this.image1 = productData.image1 || null;
+    this.image2 = productData.image2 || null;
+    this.image3 = productData.image3 || null;
+    this.image4 = productData.image4 || null;
+
+    // imageUrls boşsa eski alanlardan üret
+    if (this.imageUrls.length === 0) {
+      this._updateImageDataFromLegacyFields();
     }
 
-    static async findById(productId) {
-        const product = await db.getDb().collection('products').findOne({ _id: new ObjectId(productId) });
+    if (productData._id) this.id = productData._id.toString();
+  }
 
-        if (!product) {
-            const error = new Error('Could not find product.');
-            error.code = 404;
-            throw error;
-        }
+  /* ------------------------------------------------------------------
+     🔍  FIND HELPERS
+  ------------------------------------------------------------------ */
+  static async findById(productId) {
+    const doc = await db
+      .getDb()
+      .collection("products")
+      .findOne({ _id: new ObjectId(productId) });
 
-        product.colors = product.colors || [];
-        product.sizes = product.sizes || [];
-
-        return new Product(product);
+    if (!doc) {
+      const err = new Error("Could not find product.");
+      err.code = 404;
+      throw err;
     }
 
-    static async findAll() {
-        const products = await db.getDb().collection('products').find().toArray();
-        return products.map((productDocument) => new Product(productDocument));
-    }
+    return new Product(doc);
+  }
 
-    static async findByCategory(category) {
-        const products = await db.getDb().collection('products').find({ category: category }).toArray();
-        return products.map((productDocument) => new Product(productDocument));
-    }
+  static async findAll() {
+    const docs = await db.getDb().collection("products").find().toArray();
+    return docs.map((d) => new Product(d));
+  }
 
-    static async findByIds(productIds) {
-        const products = await db.getDb().collection('products').find({ _id: { $in: productIds.map(id => new ObjectId(id)) } }).toArray();
-        return products.map(productDocument => new Product(productDocument));
-    }
+  static async findByCategory(category) {
+    const docs = await db
+      .getDb()
+      .collection("products")
+      .find({ category })
+      .toArray();
+    return docs.map((d) => new Product(d));
+  }
 
-    updateImageData() {
-        this.imageUrls = [
-            this.image1 ? `/products/assets/images/${this.image1}` : null,
-            this.image2 ? `/products/assets/images/${this.image2}` : null,
-            this.image3 ? `/products/assets/images/${this.image3}` : null,
-            this.image4 ? `/products/assets/images/${this.image4}` : null
-        ];
-    }
+  static async findByIds(ids) {
+    const objectIds = ids.map((id) => new ObjectId(id));
+    const docs = await db
+      .getDb()
+      .collection("products")
+      .find({ _id: { $in: objectIds } })
+      .toArray();
+    return docs.map((d) => new Product(d));
+  }
 
-    async save() {
-        const productData = {
-            title: this.title,
-            price: this.price,
-            category: this.category,
-            colors: this.colors,
-            sizes: this.sizes,
-            image1: this.image1,
-            image2: this.image2,
-            image3: this.image3,
-            image4: this.image4
-        };
+  /* ------------------------------------------------------------------
+     🚀  SAVE / UPDATE / DELETE
+  ------------------------------------------------------------------ */
+  async save() {
+    const doc = {
+      title: this.title,
+      price: this.price,
+      category: this.category,
+      colors: this.colors,
+      sizes: this.sizes,
+      imageUrls: this.imageUrls,
+      // legacy alanlar (istiyorsan kaldırabilirsin)
+      image1: this.image1,
+      image2: this.image2,
+      image3: this.image3,
+      image4: this.image4,
+    };
 
-        if (this.id && ObjectId.isValid(this.id)) {
-            const productId = new ObjectId(this.id);
-            await db.getDb().collection('products').updateOne(
-                { _id: productId },
-                { $set: productData }
-            );
-        } else {
-            await db.getDb().collection('products').insertOne(productData);
-        }
+    if (this.id && ObjectId.isValid(this.id)) {
+      await db
+        .getDb()
+        .collection("products")
+        .updateOne({ _id: new ObjectId(this.id) }, { $set: doc });
+    } else {
+      const res = await db.getDb().collection("products").insertOne(doc);
+      this.id = res.insertedId.toString();
     }
+  }
 
-    async replaceImages(newImages) {
-        this.image1 = newImages[0] || this.image1;
-        this.image2 = newImages[1] || this.image2;
-        this.image3 = newImages[2] || this.image3;
-        this.image4 = newImages[3] || this.image4;
-        this.updateImageData();
-    }
+  async remove() {
+    if (!this.id) return;
+    await db
+      .getDb()
+      .collection("products")
+      .deleteOne({ _id: new ObjectId(this.id) });
+  }
 
-    async remove() {
-        const productId = new ObjectId(this.id);
-        await db.getDb().collection('products').deleteOne({ _id: productId });
-    }
+  /* ------------------------------------------------------------------
+     🛠  IMAGE HELPERS
+  ------------------------------------------------------------------ */
+  /**
+   * Legacy image1…image4 alanlarından imageUrls dizisi üretir.
+   * Cloudinary URL'si zaten http ile başlıyorsa dokunmaz; değilse yerel prefix ekler.
+   */
+  _updateImageDataFromLegacyFields() {
+    const addPrefixIfLocal = (url) =>
+      !url
+        ? null
+        : url.startsWith("http")
+        ? url
+        : `/products/assets/images/${url}`;
+
+    this.imageUrls = [
+      addPrefixIfLocal(this.image1),
+      addPrefixIfLocal(this.image2),
+      addPrefixIfLocal(this.image3),
+      addPrefixIfLocal(this.image4),
+    ].filter(Boolean);
+  }
 }
 
 module.exports = Product;

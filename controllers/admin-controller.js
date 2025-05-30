@@ -1,99 +1,107 @@
-const Product = require('../models/product-model');
-const Order = require('../models/order-model');
+const Product = require("../models/product-model");
+const Order = require("../models/order-model");
 
 async function getProducts(req, res, next) {
-    try {
-        const products = await Product.findAll();
-        const user = res.locals.user; // Ensure user is available
-        res.render('admin/products/all-products', {
-            products: products,
-            user: user // Pass user to the template
-        });
-    } catch (error) {
-        next(error);
-        return;
-    }
+  try {
+    const products = await Product.findAll();
+    products.forEach((p) => p.updateImageData());
+    const user = res.locals.user;
+    res.render("admin/products/all-products", {
+      products: products,
+      user: user,
+    });
+  } catch (error) {
+    next(error);
+    return;
+  }
 }
 
 function getNewProduct(req, res) {
-    res.render('admin/products/new-product');
+  res.render("admin/products/new-product");
 }
 
 async function createNewProduct(req, res, next) {
-    const images = req.files ? req.files.map(file => file.filename) : [];
+  try {
+    const uploadedUrls = (req.body.uploadedImageUrls || "")
+      .split(",")
+      .filter(Boolean);
 
     const productData = {
-        ...req.body,
-        colors: Array.isArray(req.body.colors) ? req.body.colors : [req.body.colors].filter(Boolean),
-        sizes: Array.isArray(req.body.sizes) ? req.body.sizes : [req.body.sizes].filter(Boolean),
-        image1: images[0] || null,
-        image2: images[1] || null,
-        image3: images[2] || null,
-        image4: images[3] || null
+      title: req.body.title,
+      price: Number(req.body.price),
+      category: req.body.category,
+      colors: [].concat(req.body.colors || []),
+      sizes: [].concat(req.body.sizes || []),
+      imageUrls: uploadedUrls,
     };
 
     const product = new Product(productData);
-
-    try {
-        await product.save();
-    } catch (error) {
-        next(error);
-        return;
-    }
-
-    res.redirect('/admin/products');
+    await product.save();
+    res.redirect("/admin/products");
+  } catch (error) {
+    next(error);
+  }
 }
 
 async function getUpdateProduct(req, res, next) {
-    try {
-        const product = await Product.findById(req.params.id);
-        if (!product) {
-            const error = new Error('Could not find product.');
-            error.statusCode = 404;
-            throw error;
-        }
-        product.updateImageData(); // Ensure image URLs are generated
-        res.render('admin/products/update-product', { product: product });
-    } catch (error) {
-        next(error);
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      const error = new Error("Could not find product.");
+      error.statusCode = 404;
+      throw error;
     }
+    product.updateImageData();
+    res.render("admin/products/update-product", { product: product });
+  } catch (error) {
+    next(error);
+  }
 }
 
 async function updateProduct(req, res, next) {
+  try {
     const existingProduct = await Product.findById(req.params.id);
 
+    if (!existingProduct) {
+      const error = new Error("Product not found.");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const uploadedUrls = req.body.uploadedImageUrls
+      ? req.body.uploadedImageUrls.split(",")
+      : [];
+
     const product = new Product({
-        ...req.body,
-        colors: Array.isArray(req.body.colors) ? req.body.colors : [req.body.colors].filter(Boolean),
-        sizes: Array.isArray(req.body.sizes) ? req.body.sizes : [req.body.sizes].filter(Boolean),
-        image1: existingProduct.image1,
-        image2: existingProduct.image2,
-        image3: existingProduct.image3,
-        image4: existingProduct.image4,
-        _id: req.params.id
+      title: req.body.title,
+      price: Number(req.body.price),
+      category: req.body.category,
+      colors: Array.isArray(req.body.colors)
+        ? req.body.colors
+        : [req.body.colors].filter(Boolean),
+      sizes: Array.isArray(req.body.sizes)
+        ? req.body.sizes
+        : [req.body.sizes].filter(Boolean),
+      image1: uploadedUrls[0] || existingProduct.image1,
+      image2: uploadedUrls[1] || existingProduct.image2,
+      image3: uploadedUrls[2] || existingProduct.image3,
+      image4: uploadedUrls[3] || existingProduct.image4,
+      _id: req.params.id,
     });
 
-    if (req.files && req.files.length > 0) {
-        const images = req.files.map(file => file.filename);
-        product.replaceImages(images);
-    }
-
-    try {
-        await product.save();
-    } catch (error) {
-        next(error);
-        return;
-    }
-
-    res.redirect('/admin/products');
+    await product.save();
+    res.redirect("/admin/products");
+  } catch (error) {
+    next(error);
+  }
 }
 
 async function getOrders(req, res, next) {
   try {
     const orders = await Order.findAll();
-    res.render('admin/orders/all-orders', {
+    res.render("admin/orders/all-orders", {
       orders: orders,
-      isAdmin: true
+      isAdmin: true,
     });
   } catch (error) {
     next(error);
@@ -107,34 +115,39 @@ async function updateOrder(req, res, next) {
   try {
     const order = await Order.findById(orderId);
 
+    if (!order) {
+      return res.status(404).json({ message: "Order not found." });
+    }
+
     order.status = newStatus;
 
     await order.save();
 
-    res.json({ message: 'Order updated', newStatus: newStatus });
+    res.json({ newStatus: order.status });
   } catch (error) {
+    console.error("Error updating order:", error);
     next(error);
   }
 }
 
 async function deleteProduct(req, res, next) {
-    let product;
-    try {
-        product = await Product.findById(req.params.id);
-        await product.remove();
-    } catch (error) {
-        return next(error);
-    }
-    res.json({ message: 'Delete success!' });
+  let product;
+  try {
+    product = await Product.findById(req.params.id);
+    await product.remove();
+  } catch (error) {
+    return next(error);
+  }
+  res.json({ message: "Delete success!" });
 }
 
 module.exports = {
-    getProducts: getProducts,
-    getNewProduct: getNewProduct,
-    createNewProduct: createNewProduct,
-    getUpdateProduct: getUpdateProduct,
-    updateProduct: updateProduct,
-    deleteProduct: deleteProduct,
-    getOrders: getOrders,
-    updateOrder: updateOrder
+  getProducts: getProducts,
+  getNewProduct: getNewProduct,
+  createNewProduct: createNewProduct,
+  getUpdateProduct: getUpdateProduct,
+  updateProduct: updateProduct,
+  deleteProduct: deleteProduct,
+  getOrders: getOrders,
+  updateOrder: updateOrder,
 };

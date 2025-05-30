@@ -1,7 +1,9 @@
 <article class="order-item">
   <header class="order-summary">
-    <h2><span class="order-item-price">₺<%= order.productData.totalPrice.toFixed(2) %></span> - <%= order.formattedDate %></h2>
-    <p><span class="badge"><%= order.status.toUpperCase() %></span></p>
+    <h2>
+      <span class="order-item-price">₺<%= order.productData.totalPrice.toFixed(2) %></span> - <%= order.formattedDate %>
+    </h2>
+    <p class="status-info"><%= order.status.toUpperCase() %></p> <!-- Display current status -->
   </header>
 
   <section class="order-details">
@@ -51,9 +53,10 @@
         <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>">
         <input type="hidden" name="orderid" value="<%= order.id %>">
         <select name="status">
-          <option value="hazırlanıyor" <% if (order.status === 'hazırlanıyor') { %>selected<% } %>>hazırlanıyor</option>
-          <option value="gönderildi" <% if (order.status === 'gönderildi') { %>selected<% } %>>gönderildi</option>
-          <option value="iptal/iade" <% if (order.status === 'iptal/iade') { %>selected<% } %>>iptal/iade</option>
+          <option value="sipariş-alındı" <% if (order.status === 'sipariş-alındı') { %>selected<% } %>>Sipariş Alındı</option>
+          <option value="hazırlanıyor" <% if (order.status === 'hazırlanıyor') { %>selected<% } %>>Hazırlanıyor</option>
+          <option value="gönderildi" <% if (order.status === 'gönderildi') { %>selected<% } %>>Gönderildi</option>
+          <option value="iptal/iade" <% if (order.status === 'iptal/iade') { %>selected<% } %>>İptal/İade</option>
         </select>
         <button class="btn btn-alt">Update</button>
         <hr>
